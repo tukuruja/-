@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>工事テンプレ | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>工事種別テンプレ</h1>
+          <p>役所/民間/造成/外構をアプリに入る粒度で定義</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="spec.html">最終仕様</a>
+          <a class="button ghost" href="roadmap.html">ロードマップ</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>役所工事テンプレ</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>提出物名</th>
+                <th>期限（基準）</th>
+                <th>担当</th>
+                <th>添付（写真/PDF）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>施工計画書</td><td>契約日+14日</td><td>現場</td><td>計画書PDF</td></tr>
+              <tr><td>安全管理計画</td><td>契約日+14日</td><td>現場</td><td>安全計画PDF</td></tr>
+              <tr><td>交通誘導計画</td><td>着工日-7日</td><td>現場</td><td>図面PDF/写真</td></tr>
+              <tr><td>着工届</td><td>着工日-7日</td><td>事務</td><td>届出PDF</td></tr>
+              <tr><td>近隣説明記録</td><td>着工日+7日</td><td>現場</td><td>説明記録PDF</td></tr>
+              <tr><td>工程表</td><td>契約日+7日</td><td>現場</td><td>工程表PDF</td></tr>
+              <tr><td>使用材料承認</td><td>着工日-3日</td><td>事務</td><td>カタログPDF</td></tr>
+              <tr><td>中間検査申請</td><td>検査日-10日</td><td>事務</td><td>申請PDF</td></tr>
+              <tr><td>完成検査申請</td><td>検査日-10日</td><td>事務</td><td>申請PDF</td></tr>
+              <tr><td>完成図書</td><td>検査日+7日</td><td>現場</td><td>完成図書PDF/写真</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>民間工事テンプレ</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>提出物名</th>
+                <th>期限（基準）</th>
+                <th>担当</th>
+                <th>添付（写真/PDF）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>見積書</td><td>契約日-7日</td><td>事務</td><td>見積PDF</td></tr>
+              <tr><td>請負契約書</td><td>契約日</td><td>事務</td><td>契約書PDF</td></tr>
+              <tr><td>工程表</td><td>契約日+7日</td><td>現場</td><td>工程表PDF</td></tr>
+              <tr><td>着工連絡</td><td>着工日-3日</td><td>現場</td><td>連絡文PDF</td></tr>
+              <tr><td>近隣挨拶記録</td><td>着工日+3日</td><td>現場</td><td>写真/記録PDF</td></tr>
+              <tr><td>中間報告</td><td>工程50%</td><td>現場</td><td>写真/PDF</td></tr>
+              <tr><td>変更契約書</td><td>変更発生+7日</td><td>事務</td><td>契約PDF</td></tr>
+              <tr><td>完成報告書</td><td>完了日+3日</td><td>現場</td><td>報告PDF/写真</td></tr>
+              <tr><td>請求書</td><td>検収日+7日</td><td>事務</td><td>請求PDF</td></tr>
+              <tr><td>保証書</td><td>引渡日+7日</td><td>事務</td><td>保証PDF</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>造成工事テンプレ</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>提出物名</th>
+                <th>期限（基準）</th>
+                <th>担当</th>
+                <th>添付（写真/PDF）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>測量図</td><td>契約日+7日</td><td>現場</td><td>測量図PDF</td></tr>
+              <tr><td>残土処分計画</td><td>着工日-7日</td><td>現場</td><td>計画書PDF</td></tr>
+              <tr><td>仮設計画</td><td>着工日-7日</td><td>現場</td><td>仮設図PDF</td></tr>
+              <tr><td>工程表</td><td>契約日+7日</td><td>現場</td><td>工程表PDF</td></tr>
+              <tr><td>土質試験結果</td><td>着工日+14日</td><td>協力会社</td><td>試験PDF</td></tr>
+              <tr><td>盛土管理記録</td><td>週次</td><td>現場</td><td>写真/記録PDF</td></tr>
+              <tr><td>排水計画</td><td>着工日-7日</td><td>現場</td><td>計画図PDF</td></tr>
+              <tr><td>中間検査資料</td><td>検査日-10日</td><td>事務</td><td>資料PDF</td></tr>
+              <tr><td>完了検査資料</td><td>検査日-10日</td><td>事務</td><td>資料PDF</td></tr>
+              <tr><td>完了報告書</td><td>完了日+7日</td><td>現場</td><td>報告PDF/写真</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>外構工事テンプレ</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>提出物名</th>
+                <th>期限（基準）</th>
+                <th>担当</th>
+                <th>添付（写真/PDF）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>外構計画図</td><td>契約日+7日</td><td>現場</td><td>計画図PDF</td></tr>
+              <tr><td>使用材料一覧</td><td>着工日-3日</td><td>事務</td><td>カタログPDF</td></tr>
+              <tr><td>工程表</td><td>契約日+7日</td><td>現場</td><td>工程表PDF</td></tr>
+              <tr><td>植栽リスト</td><td>着工日-3日</td><td>現場</td><td>リストPDF</td></tr>
+              <tr><td>カラー舗装見本</td><td>着工日-3日</td><td>現場</td><td>見本写真</td></tr>
+              <tr><td>中間報告</td><td>工程50%</td><td>現場</td><td>写真/PDF</td></tr>
+              <tr><td>引渡前チェック</td><td>引渡日-2日</td><td>現場</td><td>チェックPDF</td></tr>
+              <tr><td>完成報告書</td><td>引渡日+3日</td><td>現場</td><td>報告PDF/写真</td></tr>
+              <tr><td>請求書</td><td>検収日+7日</td><td>事務</td><td>請求PDF</td></tr>
+              <tr><td>保証書</td><td>引渡日+7日</td><td>事務</td><td>保証PDF</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>安全/品質/環境/税務の管理テンプレ</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>頻度</th>
+                <th>担当</th>
+                <th>証跡</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>朝礼・危険予知（KY）</td><td>毎日</td><td>現場</td><td>写真/メモ</td></tr>
+              <tr><td>安全パトロール</td><td>週1回</td><td>現場/安全管理</td><td>点検表PDF</td></tr>
+              <tr><td>品質検査</td><td>工程節目</td><td>現場/品質管理</td><td>検査記録PDF</td></tr>
+              <tr><td>環境対策確認</td><td>週1回</td><td>現場</td><td>チェック写真</td></tr>
+              <tr><td>産廃マニフェスト</td><td>随時</td><td>事務</td><td>マニフェストPDF</td></tr>
+              <tr><td>労務安全書類</td><td>月次</td><td>事務</td><td>書類PDF</td></tr>
+              <tr><td>税務関連データ</td><td>月次</td><td>経理</td><td>CSV/帳票PDF</td></tr>
+            </tbody>
+          </table>
+          <p>税務・法務は専門家レビュー前提として、入力と証跡の形を先に定義する。</p>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">工事種別テンプレは案件登録時に自動生成</div>
+  </body>
+</html>

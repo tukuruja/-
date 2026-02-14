@@ -1,0 +1,9 @@
+{
+  "name": "shinnitteihyo-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp -R *.html assets *.txt docs dist/",
+    "start": "python3 -m http.server 8080"
+  }
+}

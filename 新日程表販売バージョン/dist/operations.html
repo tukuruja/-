@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>運用/監視 | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>運用/監視</h1>
+          <p>同期監視・アラート閾値・閲覧ログのUI</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="api.html">OpenAPI</a>
+          <a class="button ghost" href="db.html">DB/ERD</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>監視メトリクス</h2>
+          <ul>
+            <li>同期成功率（%）</li>
+            <li>同期遅延 P95（秒）</li>
+            <li>オフラインキュー P95（件）</li>
+            <li>アップロード失敗率（%）</li>
+            <li>共有リンクアクセスエラー率（%）</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>会社ごとのアラート閾値</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>警告</th>
+                <th>致命</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>同期成功率</td><td>95%</td><td>90%</td></tr>
+              <tr><td>同期P95遅延</td><td>120秒</td><td>300秒</td></tr>
+              <tr><td>オフラインキューP95</td><td>20件</td><td>50件</td></tr>
+              <tr><td>アップロード失敗率</td><td>2%</td><td>5%</td></tr>
+              <tr><td>共有リンクエラー率</td><td>1%</td><td>3%</td></tr>
+            </tbody>
+          </table>
+          <p>閾値は会社ごとにカスタム可能。APIは /v1/settings/alerts。</p>
+        </section>
+
+        <section class="section">
+          <h2>共有リンク閲覧ログ UI（社内）</h2>
+          <div class="wireframe">
+[見た記録]
+-------------------------------------------
+  A現場 / ○○建材
+  状態: 有効（残り5日） PIN: あり
+  [リンクをコピー] [失効する] [再発行]
+
+  見た記録
+  10:12 スマホ 参照: PDF 3回
+  09:40 PC     参照: 写真 1回
+-------------------------------------------
+          </div>
+          <p>「見た記録」以外の表現は禁止。ログは「見た記録」で統一。</p>
+        </section>
+
+        <section class="section">
+          <h2>運用ルール</h2>
+          <ul>
+            <li>障害時はtrace_idで追跡。</li>
+            <li>閲覧ログは監査目的で保持。</li>
+            <li>会社設定で通知レベルを変更可能。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>教育・サポート</h2>
+          <ul>
+            <li>30秒チュートリアル動画（写真/工程/送信/書類）。</li>
+            <li>ヘルプボットでトラブル即時回答。</li>
+            <li>電話サポート（平日9-18時、平均待ち30秒以内）。</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">監視は「止まる前に知らせる」が原則</div>
+  </body>
+</html>

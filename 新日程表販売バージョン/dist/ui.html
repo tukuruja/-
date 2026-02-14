@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UI/文言 | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>UI情報設計と文言辞書</h1>
+          <p>3画面以内・短い動詞・責めない文言</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="spec.html">最終仕様</a>
+          <a class="button ghost" href="modes.html">会社モード</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>UI遷移（簡略）</h2>
+          <div class="code">
+flowchart TD
+  A["アプリ起動"] --> B["SMS/LINEで入る"]
+  B --> C["会社選択"]
+  C --> D["今日"]
+  D --> E["連絡"]
+  D --> F["日報・写真"]
+  E --> G["送る → 共有シート"]
+  G --> H["LINE/Gmail/メール/SMS"]
+  H --> E
+  X["外部アプリ"] -->|共有| E
+  E --> S["共有リンク"]
+  S --> P["公開ページ"]
+  P --> Q["PIN入力(必要時)"]
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>3画面の実画面仕様（抜粋）</h2>
+          <h3>今日</h3>
+          <div class="wireframe">
+[今日]
+-------------------------------------------
+  きょうの予定
+  ・A現場 08:30 相手: ○○建材 [連絡] [日報]
+  ・B現場 13:00 相手: △△設備 [連絡] [日報]
+
+  直近の連絡
+  ・A現場/○○建材 10:12 工程表を共有
+
+  右下: [入れる]
+  状態: 読み込み中 / 電波待ち / 空
+-------------------------------------------
+          </div>
+
+          <h3>連絡</h3>
+          <div class="wireframe">
+[連絡] A現場 / ○○建材
+-------------------------------------------
+  [入れる] [撮る] [送る] [共有リンク]
+
+  10:12 受領 「工程表」 [見る] [送る]
+  09:45 写真3枚 「配管立ち上がり」 [見る] [送る]
+  08:50 送信 「見積PDF」 [送る]
+
+  状態: 送信中 / 電波待ち / 失敗→再送
+-------------------------------------------
+          </div>
+
+          <h3>日報・写真</h3>
+          <div class="wireframe">
+[日報・写真]
+-------------------------------------------
+  進捗: 3/7  次にやること: 作業員
+  [日程][作業員][機械][資材][外注][確認][提出]
+
+  作業員
+  ・直近: 山田 / 佐藤
+  [＋1] [−1] [音声で入れる]
+
+  累計（当月）
+  人工 45.5 / 機械 12.0 / 資材 8.2 / 外注 320,000円
+
+  写真
+  [撮る] [選ぶ]
+
+  状態: 保存中（画面は止めない）
+-------------------------------------------
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>究極UI：SMS到着報告</h2>
+          <div class="wireframe">
+[SMSリンクを開いた直後]
+-------------------------------------------
+  あなたの到着報告
+
+        [ 到 着 ]  ボタン1つ
+
+  名前入力なし（電話番号から自動）
+  送信後: 「到着を記録しました」
+-------------------------------------------
+          </div>
+          <p>入力項目を削るほど合格率が上がるため、名前入力は省略する。</p>
+        </section>
+
+        <section class="section">
+          <h2>段階的開示（Progressive Disclosure）</h2>
+          <ul>
+            <li>初回は4機能のみ表示（今日/写真/連絡/電話）。</li>
+            <li>2週間後に工程表/書類/原価を解放。</li>
+            <li>1ヶ月後に集計レポート/設定/連携を解放。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>UI文言辞書（確定）</h2>
+          <div class="code">
+Tabs
+- 今日
+- 連絡
+- 日報
+
+Buttons
+- 入れる / 撮る / 送る / 見る / 共有リンク / コピー / 失効する / 再発行 / 提出 / 次へ
+
+States
+- 読み込み中
+- 保存中（待たなくてOK）
+- 電波待ち（あとで送る）
+- 送信中
+- 完了
+
+Errors
+- 電波が弱いです。あとで自動で送ります
+- PINが必要です
+- PINが違います。もう一度入れてください
+- 期限が切れました
+- このリンクは使えません
+- 使えません
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">UIは3画面内に固定、文言は変更禁止</div>
+  </body>
+</html>

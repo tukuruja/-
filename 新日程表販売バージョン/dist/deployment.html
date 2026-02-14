@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>デプロイ | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>デプロイ手順</h1>
+          <p>静的サイト本番デプロイの標準手順</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="index.html">概要</a>
+          <a class="button ghost" href="engineering.html">実装/環境</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>本番URL</h2>
+          <ul>
+            <li>Production Alias: https://shinnitteihyo-app.vercel.app</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>ローカル確認</h2>
+          <div class="code">npm run build
+npm run start</div>
+        </section>
+
+        <section class="section">
+          <h2>Vercel本番デプロイ</h2>
+          <div class="code">npx vercel deploy --prod -y --name shinnitteihyo-app</div>
+          <p>dist/ を配信。docs/ のOpenAPI/ERDも含まれる。</p>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">デプロイは常に本番URLを更新</div>
+  </body>
+</html>

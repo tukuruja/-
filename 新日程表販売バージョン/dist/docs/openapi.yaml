@@ -1,0 +1,2471 @@
+openapi: 3.1.0
+info:
+  title: Construction Schedule + Contact Note API
+  version: 2.0.0
+  description: |
+    API for schedule, contact note, daily report, masters/CSV, and share links.
+
+    Auth:
+    - Bearer access token (JWT) in `Authorization: Bearer <token>`
+    - Refresh token to reissue access tokens
+    - Login is SMS OTP or LINE OAuth
+
+    Company scope:
+    - For company-scoped endpoints, include `X-Company-Id` header.
+
+    Share links:
+    - Public endpoints use `X-Share-Session` after PIN unlock (if enabled).
+
+    Uploads:
+    - Attachments are stored and referenced by signed URLs. Base64 is not used.
+
+servers:
+  - url: https://api.example.com
+security:
+  - bearerAuth: []
+
+paths:
+  /v1/auth/sms/request:
+    post:
+      summary: Request SMS OTP
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SmsOtpRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SmsOtpResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /v1/auth/sms/verify:
+    post:
+      summary: Verify SMS OTP and issue tokens
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SmsOtpVerifyRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /v1/auth/line/start:
+    post:
+      summary: Start LINE OAuth
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LineAuthStartRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LineAuthStartResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /v1/auth/line/verify:
+    post:
+      summary: Verify LINE OAuth and issue tokens
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LineAuthVerifyRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /v1/auth/refresh:
+    post:
+      summary: Refresh access token
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRefreshRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthRefreshResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /v1/auth/logout:
+    post:
+      summary: Logout (revoke refresh token)
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthLogoutRequest"
+      responses:
+        "204":
+          description: No Content
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /v1/users/me:
+    get:
+      summary: Get current user
+      tags: [Users]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /v1/companies:
+    get:
+      summary: List companies for current user
+      tags: [Companies]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCompaniesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /v1/companies/{id}:
+    get:
+      summary: Get company
+      tags: [Companies]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/companies/{id}/members:
+    get:
+      summary: List company members
+      tags: [Companies]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCompanyMembersResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/companies/{id}/members/{user_id}:
+    patch:
+      summary: Update member role
+      tags: [Companies]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberRoleUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Membership"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /v1/roles:
+    get:
+      summary: List roles
+      tags: [Roles]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListRolesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /v1/settings/alerts:
+    get:
+      summary: Get company alert thresholds
+      tags: [Monitoring]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertThresholds"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      summary: Update company alert thresholds
+      tags: [Monitoring]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertThresholdsUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertThresholds"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /v1/projects:
+    get:
+      summary: List projects
+      tags: [Projects]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: status
+          in: query
+          schema: { type: string, enum: [active, archived] }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListProjectsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      summary: Create project
+      tags: [Projects]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /v1/projects/{id}:
+    get:
+      summary: Get project
+      tags: [Projects]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update project
+      tags: [Projects]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /v1/projects/{id}/archive:
+    post:
+      summary: Archive project
+      tags: [Projects]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /v1/counterparties:
+    get:
+      summary: List counterparties
+      tags: [Counterparties]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: type
+          in: query
+          schema: { type: string, enum: [client, subcontractor, supplier] }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCounterpartiesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      summary: Create counterparty
+      tags: [Counterparties]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CounterpartyCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Counterparty"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /v1/counterparties/{id}:
+    patch:
+      summary: Update counterparty
+      tags: [Counterparties]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CounterpartyUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Counterparty"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /v1/masters/workers:
+    get:
+      summary: List workers
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: q
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListWorkersResponse"
+
+  /v1/masters/workers/import-csv:
+    post:
+      summary: Import workers CSV
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CsvImportRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvImportResponse"
+
+  /v1/masters/machines:
+    get:
+      summary: List machines
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: category
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListMachinesResponse"
+
+  /v1/masters/machines/import-csv:
+    post:
+      summary: Import machines CSV
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CsvImportRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvImportResponse"
+
+  /v1/masters/materials:
+    get:
+      summary: List materials
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: category
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListMaterialsResponse"
+
+  /v1/masters/materials/import-csv:
+    post:
+      summary: Import materials CSV
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CsvImportRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvImportResponse"
+
+  /v1/masters/outsourcing-items:
+    get:
+      summary: List outsourcing items
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: category
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOutsourcingItemsResponse"
+
+  /v1/masters/outsourcing-items/import-csv:
+    post:
+      summary: Import outsourcing items CSV
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CsvImportRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvImportResponse"
+
+  /v1/masters/work-types:
+    get:
+      summary: List work types
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListWorkTypesResponse"
+
+  /v1/masters/work-types/import-csv:
+    post:
+      summary: Import work types CSV
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CsvImportRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvImportResponse"
+
+  /v1/masters/trainings:
+    get:
+      summary: List trainings
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListTrainingsResponse"
+
+  /v1/masters/trainings/import-csv:
+    post:
+      summary: Import trainings CSV
+      tags: [Masters]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CsvImportRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvImportResponse"
+
+  /v1/schedules:
+    get:
+      summary: List schedules
+      tags: [Schedules]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: project_id
+          in: query
+          schema: { type: string }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSchedulesResponse"
+    post:
+      summary: Create schedule
+      tags: [Schedules]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+
+  /v1/schedules/{id}:
+    get:
+      summary: Get schedule
+      tags: [Schedules]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+    patch:
+      summary: Update schedule
+      tags: [Schedules]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+
+  /v1/schedules/{id}/resources:
+    get:
+      summary: Get schedule resources
+      tags: [Schedules]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleResourcesResponse"
+    put:
+      summary: Replace schedule resources
+      tags: [Schedules]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleResourceUpsertRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleResourcesResponse"
+
+  /v1/daily-reports:
+    get:
+      summary: List daily reports
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: project_id
+          in: query
+          schema: { type: string }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListDailyReportsResponse"
+    post:
+      summary: Create daily report
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyReportCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReport"
+
+  /v1/daily-reports/{id}:
+    get:
+      summary: Get daily report
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReport"
+    patch:
+      summary: Update daily report
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyReportUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReport"
+
+  /v1/daily-reports/{id}/entries:
+    get:
+      summary: Get daily report entries
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReportEntriesResponse"
+    put:
+      summary: Replace daily report entries
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyReportEntriesRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReportEntriesResponse"
+
+  /v1/daily-reports/{id}/work-trainings:
+    get:
+      summary: Get work/training entries
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReportWorkTrainingResponse"
+    put:
+      summary: Replace work/training entries
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyReportWorkTrainingRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReportWorkTrainingResponse"
+
+  /v1/daily-reports/{id}/submit:
+    post:
+      summary: Submit daily report
+      tags: [DailyReports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyReportSubmitRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReport"
+
+  /v1/reports/cumulative/daily:
+    get:
+      summary: Daily report cumulative totals
+      tags: [Reports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: project_id
+          in: query
+          schema: { type: string }
+        - name: period
+          in: query
+          schema: { type: string, enum: [month, fiscal_year, all] }
+        - name: from
+          in: query
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyCumulativeResponse"
+
+  /v1/reports/cumulative/work-training:
+    get:
+      summary: Work type x training cumulative totals
+      tags: [Reports]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: project_id
+          in: query
+          schema: { type: string }
+        - name: period
+          in: query
+          schema: { type: string, enum: [month, fiscal_year, all] }
+        - name: work_type_id
+          in: query
+          schema: { type: string }
+        - name: training_id
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkTrainingCumulativeResponse"
+
+  /v1/threads:
+    post:
+      summary: Create thread (project x counterparty)
+      tags: [Threads]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+    get:
+      summary: List threads
+      tags: [Threads]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: project_id
+          in: query
+          schema: { type: string }
+        - name: counterparty_id
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListThreadsResponse"
+
+  /v1/threads/{id}:
+    get:
+      summary: Get thread
+      tags: [Threads]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+
+  /v1/threads/{id}/timeline:
+    get:
+      summary: Get thread timeline
+      tags: [Timeline]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: cursor
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimelinePage"
+
+  /v1/threads/{id}/events:
+    post:
+      summary: Append event to thread
+      tags: [Timeline]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /v1/uploads:
+    post:
+      summary: Create upload (pre-signed)
+      tags: [Uploads]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadCreateResponse"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+
+  /v1/uploads/{id}/complete:
+    post:
+      summary: Complete upload and create attachment
+      tags: [Uploads]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadCompleteRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attachment"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/attachments/{id}:
+    get:
+      summary: Get attachment
+      tags: [Uploads]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attachment"
+
+  /v1/share-links:
+    post:
+      summary: Create share link
+      tags: [ShareLinks]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShareLinkCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShareLink"
+
+  /v1/share-links/{id}/revoke:
+    post:
+      summary: Revoke share link
+      tags: [ShareLinks]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: No Content
+
+  /v1/share-links/{id}/logs:
+    get:
+      summary: Get share link access logs
+      tags: [ShareLinks]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: cursor
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 50 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessLogPage"
+
+  /v1/deliveries:
+    post:
+      summary: Record delivery (share action)
+      tags: [Deliveries]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Delivery"
+
+  /v1/sync:
+    post:
+      summary: Offline sync (pull + optional push)
+      tags: [Sync]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/ClientDeviceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncResponse"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /v1/telemetry/sync:
+    post:
+      summary: Record client sync telemetry
+      tags: [Telemetry]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - $ref: "#/components/parameters/ClientDeviceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncTelemetryRequest"
+      responses:
+        "204":
+          description: No Content
+
+  /s/{token}:
+    get:
+      summary: Public share view (no auth)
+      security: []
+      tags: [Public]
+      parameters:
+        - $ref: "#/components/parameters/ShareSession"
+        - name: token
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicThreadView"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "410":
+          $ref: "#/components/responses/Gone"
+
+  /s/{token}/unlock:
+    post:
+      summary: Unlock share link with PIN
+      security: []
+      tags: [Public]
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SharePinUnlockRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharePinUnlockResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "410":
+          $ref: "#/components/responses/Gone"
+
+  /s/{token}/file/{attachmentId}:
+    get:
+      summary: Public file access (no auth)
+      security: []
+      tags: [Public]
+      parameters:
+        - $ref: "#/components/parameters/ShareSession"
+        - name: token
+          in: path
+          required: true
+          schema: { type: string }
+        - name: attachmentId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "302":
+          description: Redirect to signed URL
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "410":
+          $ref: "#/components/responses/Gone"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string }
+    CompanyId:
+      name: X-Company-Id
+      in: header
+      required: true
+      schema: { type: string }
+    ShareSession:
+      name: X-Share-Session
+      in: header
+      required: false
+      schema: { type: string }
+    ClientDeviceId:
+      name: X-Client-Device-Id
+      in: header
+      required: false
+      schema: { type: string }
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Gone:
+      description: Gone (expired or revoked)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    TooManyRequests:
+      description: Too Many Requests
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/X-RateLimit-Limit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/X-RateLimit-Remaining"
+        X-RateLimit-Reset:
+          $ref: "#/components/headers/X-RateLimit-Reset"
+        Retry-After:
+          $ref: "#/components/headers/Retry-After"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    PayloadTooLarge:
+      description: Payload Too Large
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    UnsupportedMediaType:
+      description: Unsupported Media Type
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  headers:
+    X-RateLimit-Limit:
+      description: Maximum number of requests per window.
+      schema: { type: integer }
+    X-RateLimit-Remaining:
+      description: Remaining requests in the current window.
+      schema: { type: integer }
+    X-RateLimit-Reset:
+      description: Unix timestamp for when the current window resets.
+      schema: { type: integer }
+    Retry-After:
+      description: Seconds to wait before retrying.
+      schema: { type: integer }
+
+  schemas:
+    SmsOtpRequest:
+      type: object
+      required: [phone]
+      properties:
+        phone: { type: string }
+        device_name: { type: string }
+
+    SmsOtpResponse:
+      type: object
+      properties:
+        request_id: { type: string }
+        expires_at: { type: string, format: date-time }
+        resend_after_seconds: { type: integer }
+
+    SmsOtpVerifyRequest:
+      type: object
+      required: [request_id, code]
+      properties:
+        request_id: { type: string }
+        code: { type: string }
+
+    LineAuthStartRequest:
+      type: object
+      required: [redirect_uri, state]
+      properties:
+        redirect_uri: { type: string }
+        state: { type: string }
+
+    LineAuthStartResponse:
+      type: object
+      properties:
+        authorize_url: { type: string }
+        state: { type: string }
+
+    LineAuthVerifyRequest:
+      type: object
+      required: [code, redirect_uri, state]
+      properties:
+        code: { type: string }
+        redirect_uri: { type: string }
+        state: { type: string }
+
+    AuthTokenResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        access_expires_at: { type: string, format: date-time }
+        refresh_token: { type: string }
+        refresh_expires_at: { type: string, format: date-time }
+        user: { $ref: "#/components/schemas/User" }
+        companies:
+          type: array
+          items: { $ref: "#/components/schemas/Company" }
+
+    AuthRefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token: { type: string }
+
+    AuthRefreshResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        access_expires_at: { type: string, format: date-time }
+        refresh_token: { type: string }
+        refresh_expires_at: { type: string, format: date-time }
+
+    AuthLogoutRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token: { type: string }
+
+    Company:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        status: { type: string, enum: [active, suspended] }
+        created_at: { type: string, format: date-time }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        phone: { type: string }
+        email: { type: string, format: email, nullable: true }
+        status: { type: string, enum: [active, suspended] }
+        created_at: { type: string, format: date-time }
+
+    Role:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        name: { type: string }
+        permissions:
+          type: array
+          items: { $ref: "#/components/schemas/Permission" }
+
+    Permission:
+      type: object
+      properties:
+        key:
+          type: string
+          enum:
+            - company.view
+            - company.manage
+            - member.invite
+            - member.role.update
+            - member.remove
+            - project.view
+            - project.create
+            - project.edit
+            - project.archive
+            - counterparty.view
+            - counterparty.manage
+            - thread.view
+            - thread.create
+            - event.view
+            - event.create
+            - event.correct
+            - event.cancel
+            - attachment.upload
+            - attachment.view
+            - delivery.record
+            - share_link.view
+            - share_link.create
+            - share_link.revoke
+            - export.pdf
+            - audit.view
+            - settings.billing
+            - sync.offline
+        description: { type: string }
+
+    Membership:
+      type: object
+      properties:
+        company_id: { type: string }
+        user_id: { type: string }
+        role_id: { type: string }
+        status: { type: string, enum: [active, invited, removed] }
+        created_at: { type: string, format: date-time }
+
+    MemberRoleUpdateRequest:
+      type: object
+      required: [role_id]
+      properties:
+        role_id: { type: string }
+
+    AlertThresholds:
+      type: object
+      properties:
+        sync_success_rate_warn: { type: number }
+        sync_success_rate_crit: { type: number }
+        sync_p95_lag_warn_seconds: { type: integer }
+        sync_p95_lag_crit_seconds: { type: integer }
+        offline_queue_p95_warn: { type: integer }
+        upload_error_rate_warn: { type: number }
+        share_access_error_rate_warn: { type: number }
+
+    AlertThresholdsUpdateRequest:
+      type: object
+      properties:
+        sync_success_rate_warn: { type: number }
+        sync_success_rate_crit: { type: number }
+        sync_p95_lag_warn_seconds: { type: integer }
+        sync_p95_lag_crit_seconds: { type: integer }
+        offline_queue_p95_warn: { type: integer }
+        upload_error_rate_warn: { type: number }
+        share_access_error_rate_warn: { type: number }
+
+    Project:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        name: { type: string }
+        address: { type: string }
+        status: { type: string, enum: [active, archived] }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ProjectCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        address: { type: string }
+
+    ProjectUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        address: { type: string }
+        status: { type: string, enum: [active, archived] }
+
+    Counterparty:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        type: { type: string, enum: [client, subcontractor, supplier] }
+        name: { type: string }
+        phones:
+          type: array
+          items: { type: string }
+        emails:
+          type: array
+          items: { type: string, format: email }
+        created_at: { type: string, format: date-time }
+
+    CounterpartyCreateRequest:
+      type: object
+      required: [type, name]
+      properties:
+        type: { type: string, enum: [client, subcontractor, supplier] }
+        name: { type: string }
+        phones:
+          type: array
+          items: { type: string }
+        emails:
+          type: array
+          items: { type: string, format: email }
+
+    CounterpartyUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        phones:
+          type: array
+          items: { type: string }
+        emails:
+          type: array
+          items: { type: string, format: email }
+
+    Worker:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        unit_cost: { type: number }
+        active: { type: boolean }
+
+    Machine:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        category: { type: string }
+        unit: { type: string }
+        unit_cost: { type: number }
+        active: { type: boolean }
+
+    Material:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        category: { type: string }
+        unit: { type: string }
+        unit_cost: { type: number }
+        active: { type: boolean }
+
+    OutsourcingItem:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        category: { type: string }
+        counterparty_id: { type: string, nullable: true }
+        unit: { type: string }
+        unit_cost: { type: number }
+        active: { type: boolean }
+
+    WorkType:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        active: { type: boolean }
+
+    Training:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        valid_years: { type: integer }
+        active: { type: boolean }
+
+    CsvImportRequest:
+      type: object
+      required: [upload_id]
+      properties:
+        upload_id: { type: string }
+        mode: { type: string, enum: [merge, replace], default: merge }
+        detect_header: { type: boolean, default: true }
+
+    CsvImportResponse:
+      type: object
+      properties:
+        created: { type: integer }
+        updated: { type: integer }
+        skipped: { type: integer }
+        errors:
+          type: array
+          items: { $ref: "#/components/schemas/CsvImportError" }
+
+    CsvImportError:
+      type: object
+      properties:
+        row: { type: integer }
+        message: { type: string }
+
+    Schedule:
+      type: object
+      properties:
+        id: { type: string }
+        project_id: { type: string }
+        date: { type: string, format: date }
+        title: { type: string }
+        status: { type: string, enum: [planned, in_progress, done] }
+        notes: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ScheduleCreateRequest:
+      type: object
+      required: [project_id, date]
+      properties:
+        project_id: { type: string }
+        date: { type: string, format: date }
+        title: { type: string }
+        notes: { type: string }
+
+    ScheduleUpdateRequest:
+      type: object
+      properties:
+        title: { type: string }
+        notes: { type: string }
+        status: { type: string, enum: [planned, in_progress, done] }
+
+    ScheduleResource:
+      type: object
+      properties:
+        id: { type: string }
+        schedule_id: { type: string }
+        resource_type: { type: string, enum: [worker, machine, material, outsourcing] }
+        resource_id: { type: string }
+        quantity: { type: number }
+        unit: { type: string }
+        notes: { type: string }
+
+    ScheduleResourceUpsertRequest:
+      type: object
+      required: [resources]
+      properties:
+        resources:
+          type: array
+          items: { $ref: "#/components/schemas/ScheduleResource" }
+
+    DailyReport:
+      type: object
+      properties:
+        id: { type: string }
+        project_id: { type: string }
+        date: { type: string, format: date }
+        status: { type: string, enum: [draft, submitted] }
+        submitted_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    DailyReportCreateRequest:
+      type: object
+      required: [project_id, date]
+      properties:
+        project_id: { type: string }
+        date: { type: string, format: date }
+
+    DailyReportUpdateRequest:
+      type: object
+      properties:
+        status: { type: string, enum: [draft, submitted] }
+
+    DailyReportSubmitRequest:
+      type: object
+      properties:
+        submitted_by: { type: string }
+
+    DailyReportWorkerEntry:
+      type: object
+      properties:
+        worker_id: { type: string }
+        headcount: { type: number }
+        hours: { type: number }
+        unit_cost: { type: number }
+        cost: { type: number }
+
+    DailyReportMachineEntry:
+      type: object
+      properties:
+        machine_id: { type: string }
+        hours: { type: number }
+        quantity: { type: number }
+        unit_cost: { type: number }
+        cost: { type: number }
+
+    DailyReportMaterialEntry:
+      type: object
+      properties:
+        material_id: { type: string }
+        quantity: { type: number }
+        unit_cost: { type: number }
+        cost: { type: number }
+
+    DailyReportOutsourcingEntry:
+      type: object
+      properties:
+        outsourcing_item_id: { type: string }
+        quantity: { type: number }
+        unit_cost: { type: number }
+        cost: { type: number }
+
+    DailyReportWorkTrainingEntry:
+      type: object
+      properties:
+        work_type_id: { type: string }
+        training_id: { type: string }
+        count: { type: integer }
+        persons: { type: integer }
+
+    DailyReportEntriesRequest:
+      type: object
+      properties:
+        workers:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportWorkerEntry" }
+        machines:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportMachineEntry" }
+        materials:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportMaterialEntry" }
+        outsourcing:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportOutsourcingEntry" }
+
+    DailyReportEntriesResponse:
+      type: object
+      properties:
+        workers:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportWorkerEntry" }
+        machines:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportMachineEntry" }
+        materials:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportMaterialEntry" }
+        outsourcing:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportOutsourcingEntry" }
+
+    DailyReportWorkTrainingRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportWorkTrainingEntry" }
+
+    DailyReportWorkTrainingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReportWorkTrainingEntry" }
+
+    DailyCumulativeResponse:
+      type: object
+      properties:
+        period: { type: string }
+        from: { type: string, format: date }
+        to: { type: string, format: date }
+        totals:
+          type: object
+          properties:
+            labor_total: { type: number }
+            machine_total: { type: number }
+            material_total: { type: number }
+            outsourcing_total: { type: number }
+            total_cost: { type: number }
+        today_delta:
+          type: object
+          properties:
+            labor: { type: number }
+            machine: { type: number }
+            material: { type: number }
+            outsourcing: { type: number }
+
+    WorkTrainingCumulativeResponse:
+      type: object
+      properties:
+        period: { type: string }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              work_type_id: { type: string }
+              training_id: { type: string }
+              total_count: { type: integer }
+              total_persons: { type: integer }
+
+    Thread:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        project_id: { type: string }
+        counterparty_id: { type: string }
+        title: { type: string }
+        last_event_at: { type: string, format: date-time }
+        status: { type: string, enum: [active, archived] }
+        created_at: { type: string, format: date-time }
+
+    ThreadCreateRequest:
+      type: object
+      required: [project_id, counterparty_id]
+      properties:
+        project_id: { type: string }
+        counterparty_id: { type: string }
+        title: { type: string }
+
+    Event:
+      type: object
+      properties:
+        id: { type: string }
+        thread_id: { type: string }
+        type:
+          type: string
+          enum: [received_doc, sent, memo, photo, plan, report, schedule_change, correction, cancel]
+        body: { type: string }
+        created_by: { type: string }
+        created_at: { type: string, format: date-time }
+        source: { type: string, enum: [app, share_in, email, line, sms, system] }
+        related_event_id: { type: string, nullable: true }
+        status: { type: string, enum: [active, corrected, canceled] }
+        attachments:
+          type: array
+          items: { $ref: "#/components/schemas/Attachment" }
+
+    EventCreateRequest:
+      type: object
+      required: [type]
+      properties:
+        client_event_id: { type: string }
+        client_created_at: { type: string, format: date-time }
+        device_id: { type: string }
+        type:
+          type: string
+          enum: [received_doc, sent, memo, photo, plan, report, schedule_change, correction, cancel]
+        body: { type: string }
+        source: { type: string, enum: [app, share_in, email, line, sms, system] }
+        related_event_id: { type: string }
+        attachment_ids:
+          type: array
+          items: { type: string }
+
+    AttachmentVariant:
+      type: object
+      properties:
+        kind: { type: string, enum: [original, preview, thumb] }
+        url: { type: string }
+        width: { type: integer }
+        height: { type: integer }
+        size: { type: integer }
+
+    Attachment:
+      type: object
+      properties:
+        id: { type: string }
+        event_id: { type: string }
+        kind: { type: string, enum: [photo, pdf, doc, mail] }
+        file_name: { type: string }
+        mime: { type: string }
+        size: { type: integer }
+        storage_key: { type: string }
+        width: { type: integer }
+        height: { type: integer }
+        variants:
+          type: array
+          items: { $ref: "#/components/schemas/AttachmentVariant" }
+        captured_at: { type: string, format: date-time }
+
+    UploadCreateRequest:
+      type: object
+      required: [file_name, mime, size]
+      properties:
+        file_name: { type: string }
+        mime: { type: string }
+        size: { type: integer }
+        kind: { type: string, enum: [photo, pdf, doc, mail] }
+
+    UploadCreateResponse:
+      type: object
+      properties:
+        upload_id: { type: string }
+        upload_url: { type: string }
+        upload_fields:
+          type: object
+          additionalProperties: true
+        storage_key: { type: string }
+        expires_at: { type: string, format: date-time }
+
+    UploadCompleteRequest:
+      type: object
+      properties:
+        checksum: { type: string }
+
+    Delivery:
+      type: object
+      properties:
+        id: { type: string }
+        event_id: { type: string }
+        channel: { type: string, enum: [line, email, sms, share] }
+        to: { type: string }
+        shared_at: { type: string, format: date-time }
+        status: { type: string, enum: [ok, failed] }
+        error_code: { type: string, nullable: true }
+
+    DeliveryCreateRequest:
+      type: object
+      required: [event_id, channel]
+      properties:
+        event_id: { type: string }
+        channel: { type: string, enum: [line, email, sms, share] }
+        to: { type: string }
+        status: { type: string, enum: [ok, failed] }
+        error_code: { type: string }
+
+    ShareLink:
+      type: object
+      properties:
+        id: { type: string }
+        target_type: { type: string, enum: [thread, event, attachment] }
+        target_id: { type: string }
+        token: { type: string }
+        expires_at: { type: string, format: date-time }
+        revoked_at: { type: string, format: date-time, nullable: true }
+        access_count: { type: integer }
+        last_access_at: { type: string, format: date-time, nullable: true }
+        pin_enabled: { type: boolean }
+
+    ShareLinkCreateRequest:
+      type: object
+      required: [target_type, target_id]
+      properties:
+        target_type: { type: string, enum: [thread, event, attachment] }
+        target_id: { type: string }
+        expires_in_days: { type: integer, minimum: 1, maximum: 365, default: 7 }
+        pin_enabled: { type: boolean, default: false }
+        pin_code: { type: string }
+
+    SharePinUnlockRequest:
+      type: object
+      required: [pin_code]
+      properties:
+        pin_code: { type: string }
+
+    SharePinUnlockResponse:
+      type: object
+      properties:
+        share_session: { type: string }
+        expires_at: { type: string, format: date-time }
+
+    AccessLog:
+      type: object
+      properties:
+        id: { type: string }
+        share_link_id: { type: string }
+        accessed_at: { type: string, format: date-time }
+        ip_hash: { type: string }
+        ua: { type: string }
+        referrer: { type: string }
+        path: { type: string }
+        device_type: { type: string, enum: [mobile, pc, unknown] }
+
+    AccessLogPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AccessLog" }
+        next_cursor: { type: string, nullable: true }
+
+    TimelinePage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Event" }
+        next_cursor: { type: string, nullable: true }
+
+    PublicThreadView:
+      type: object
+      properties:
+        thread: { $ref: "#/components/schemas/Thread" }
+        timeline: { $ref: "#/components/schemas/TimelinePage" }
+
+    SyncRequest:
+      type: object
+      properties:
+        since_cursor: { type: string }
+        client_events:
+          type: array
+          items: { $ref: "#/components/schemas/EventCreateRequest" }
+
+    SyncResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Event" }
+        next_cursor: { type: string }
+        conflicts:
+          type: array
+          items: { $ref: "#/components/schemas/SyncConflict" }
+
+    SyncConflict:
+      type: object
+      properties:
+        client_event_id: { type: string }
+        server_event_id: { type: string, nullable: true }
+        reason:
+          type: string
+          enum:
+            - DUPLICATE
+            - THREAD_ARCHIVED
+            - PERMISSION_DENIED
+            - RELATED_EVENT_NOT_FOUND
+            - ATTACHMENT_NOT_FOUND
+        resolution:
+          type: string
+          enum:
+            - ACCEPTED_AS_EXISTING
+            - REJECTED
+            - NEEDS_RETRY
+
+    SyncTelemetryRequest:
+      type: object
+      required: [device_id, queue_size, last_sync_at]
+      properties:
+        device_id: { type: string }
+        queue_size: { type: integer }
+        last_sync_at: { type: string, format: date-time }
+        last_sync_status: { type: string, enum: [ok, failed] }
+        last_error_reason: { type: string }
+        app_version: { type: string }
+        os_version: { type: string }
+
+    ListCompaniesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Company" }
+
+    ListCompanyMembersResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Membership" }
+
+    ListRolesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Role" }
+
+    ListProjectsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Project" }
+
+    ListCounterpartiesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Counterparty" }
+
+    ListWorkersResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Worker" }
+
+    ListMachinesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Machine" }
+
+    ListMaterialsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Material" }
+
+    ListOutsourcingItemsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OutsourcingItem" }
+
+    ListWorkTypesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/WorkType" }
+
+    ListTrainingsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Training" }
+
+    ListSchedulesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Schedule" }
+
+    ScheduleResourcesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ScheduleResource" }
+
+    ListDailyReportsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/DailyReport" }
+
+    ListThreadsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Thread" }
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - AUTH_REQUIRED
+            - AUTH_INVALID
+            - AUTH_EXPIRED
+            - AUTH_OTP_INVALID
+            - AUTH_OTP_EXPIRED
+            - AUTH_LINE_INVALID
+            - COMPANY_REQUIRED
+            - PERMISSION_DENIED
+            - SHARE_PIN_REQUIRED
+            - SHARE_PIN_INVALID
+            - VALIDATION_FAILED
+            - NOT_FOUND
+            - CONFLICT
+            - RATE_LIMITED
+            - UPLOAD_EXPIRED
+            - UNSUPPORTED_MIME
+            - PAYLOAD_TOO_LARGE
+            - SHARE_LINK_EXPIRED
+            - SHARE_LINK_REVOKED
+            - CSV_INVALID
+            - CSV_ROW_ERROR
+            - INTERNAL
+        message: { type: string }
+        details:
+          type: object
+          additionalProperties: true
+        trace_id: { type: string }

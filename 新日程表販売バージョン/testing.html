@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>テスト/検証 | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>テスト/検証</h1>
+          <p>説明無しで成立するかの過酷検証</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="roadmap.html">ロードマップ</a>
+          <a class="button ghost" href="ui.html">UI/文言</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>テスター属性</h2>
+          <ul>
+            <li>建設会社A: 管理2名 + 作業員1名、完全FAX主義。</li>
+            <li>建設会社B: 管理2名 + 作業員1名、LINE誤送信のトラブル経験あり。</li>
+            <li>追加5名: 18歳監督/22歳監督/63歳職人/32歳転職者/50代パート事務。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>検証タスク（説明/マニュアル無し）</h2>
+          <ul>
+            <li>今日→現場を開く（30秒以内）。</li>
+            <li>LINE本文を共有→連絡へ入れる（60秒以内）。</li>
+            <li>Gmail添付PDFを共有→連絡へ入れる（60秒以内）。</li>
+            <li>写真3枚→連絡へ入れる（60秒以内）。</li>
+            <li>連絡→送る→LINEで送信（60秒以内）。</li>
+            <li>圏外で写真→保存→自動送信（操作追加ゼロ）。</li>
+            <li>日報提出後、累計が増えることを確認（2分以内）。</li>
+            <li>SMSリンク→到着報告（60秒以内、名前入力無し）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>品質合格基準（Definition of Done）</h2>
+          <ul>
+            <li>63歳職人: 2回目でT2/T4/T5を説明なしで達成。</li>
+            <li>18歳監督: 初回でT1〜T5を達成。</li>
+            <li>迷い回数は0回、離脱は0回。</li>
+            <li>誤操作率は全操作の5%未満。</li>
+            <li>「面倒」「小さい」「分からない」発言が出ない。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>罵倒/言いがかり対策（仕様で封じる）</h2>
+          <ul>
+            <li>「送ったのに届いてない」→ 送信履歴/再送ボタン。</li>
+            <li>「見た/見てない」→ 見た記録ログを表示（「見た記録」以外の表現は禁止）。</li>
+            <li>「写真が消えた」→ 端末保存＋同期キュー。</li>
+            <li>「勝手に送った」→ 送信者/端末/時刻を記録。</li>
+            <li>「字が小さい」→ デフォルト1.5倍のフォント。</li>
+            <li>「押せない」→ タッチターゲット48dp以上。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>同期テストケース</h2>
+          <ul>
+            <li>正常: オンラインで連絡追加 → 即同期。</li>
+            <li>競合: 同一client_event_id → ACCEPTED_AS_EXISTING。</li>
+            <li>電波断: アップロード途中で切断 → 再送。</li>
+            <li>再送: NEEDS_RETRY後に自動成功。</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">検証で落ちたら機能追加ではなくUI修正</div>
+  </body>
+</html>

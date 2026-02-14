@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>最終仕様 | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>最終仕様</h1>
+          <p>連絡ノート/共有リンク/累計/導線/画質まで確定</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="index.html">概要</a>
+          <a class="button ghost" href="ui.html">UI/文言</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>連絡ノート（核機能）</h2>
+          <ul>
+            <li>Thread = 現場 × 相手（取引先/下請/仕入）。</li>
+            <li>イベント種別: 受領/送信/写真/メモ/工程/日報/訂正/取消。</li>
+            <li>時系列は追記のみ。訂正・取消は別イベントで残す。</li>
+            <li>送るはOS共有シート中心、送信履歴は必ず保存。</li>
+            <li>もらうは共有 → 現場/相手の2択で確定。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>共有リンクと証跡</h2>
+          <ul>
+            <li>SMS/LINEで入る必要なしで閲覧できる。期限デフォルト7日、即時失効。</li>
+            <li>PINは4〜8桁、5回失敗で10分ロック。</li>
+            <li>閲覧ログは「見た記録」のみ（「見た記録」以外の表現は禁止）。</li>
+            <li>アクセスログ: 日時/端末/IPハッシュ/参照内容。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>外注区分フィルター</h2>
+          <ul>
+            <li>outsourcing_items.category を追加。</li>
+            <li>CSVは列追加で互換、欠損時は「その他」。</li>
+            <li>機械/資材と同じUIで絞り込み。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>累計表示</h2>
+          <div class="grid">
+            <div class="card">
+              <h4>工種×講習</h4>
+              <p>当月/年度/全期間。実施回数・人数の累計。</p>
+            </div>
+            <div class="card">
+              <h4>日報累計</h4>
+              <p>人工/機械/資材/外注/原価を累計＋今日差分。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>迷いゼロ導線</h2>
+          <ul>
+            <li>3画面原則: 今日 / 連絡 / 日報・写真。</li>
+            <li>7ステップ: 日程 → 作業員 → 機械 → 資材 → 外注 → 確認 → 提出。</li>
+            <li>未入力を赤、次にやることを常時表示。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>画質・品質</h2>
+          <ul>
+            <li>プレビュー: 長辺1280〜1600px、JPEG品質0.7〜0.75。</li>
+            <li>原本: 長辺2560〜3000px、JPEG品質0.85、向き補正/ブレ軽減。</li>
+            <li>PDF: A4相当で文字高さ12px以上、200dpiプレビュー/300dpi保存。</li>
+            <li>低電波: ローカル保存 → 同期キューで再送。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>写真管理の高度化</h2>
+          <ul>
+            <li>黒板OCRで工種/測点/日付を自動読み取り。</li>
+            <li>GPSから測点候補を提案。</li>
+            <li>連写は自動グルーピング。</li>
+            <li>台帳PDFをワンタップ生成。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>通知設計</h2>
+          <ul>
+            <li>緊急/重要/参考の3段階。</li>
+            <li>緊急のみ音付き、重要は無音、参考はバッジ。</li>
+            <li>同一案件は1時間に1回まとめ。</li>
+            <li>おやすみモードは18時〜翌7時（緊急のみ）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>認証・レート制限・対応OS</h2>
+          <ul>
+            <li>認証: SMS OTP + LINE OAuth（メール/パスワード無し）。</li>
+            <li>レート: SMS 10回/時間、共有リンク閲覧60/分/IP、API 120/分/ユーザー。</li>
+            <li>OS下限: iOS 15+ / Android 9+（体感0を優先）。</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">最終仕様はOpenAPI/DB/テストに必ず整合</div>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>実装/環境 | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>実装/環境</h1>
+          <p>どの環境で・どう書き・どこへデプロイするか</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="deployment.html">デプロイ</a>
+          <a class="button ghost" href="api.html">OpenAPI</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>推奨構成（実装と運用の最小コスト）</h2>
+          <ul>
+            <li>フロント: React Native（iOS/Android同時）＋PWA（共有リンク閲覧）。</li>
+            <li>API: Node.js + TypeScript + Fastify（REST + OpenAPI）。</li>
+            <li>PDF/OCR: Python（index.py）で非同期ジョブ。</li>
+            <li>CSV/マスター: Google Apps Script（gas.js）で既存シート連携。</li>
+            <li>DB: PostgreSQL（Cloud SQL / RDS）。</li>
+            <li>ストレージ: S3互換（GCS/AWS）。</li>
+            <li>ジョブ: Cloud Tasks / SQS。</li>
+            <li>監視: OpenTelemetry + Metrics + Trace ID。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>PDF base64 → 保存＋リンク</h2>
+          <div class="callout">
+            <strong>方針</strong>
+            APIがbase64でPDFを返さず、ストレージに保存し署名URLを返す。
+          </div>
+          <div class="code">
+1. PDF生成（Python index.py）
+2. ストレージへ保存（S3/GCS）
+3. ShareLinkを作成
+4. 共有リンクURLを返却
+5. 閲覧時は短期署名URLでリダイレクト
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>オフライン同期・競合ルール</h2>
+          <ul>
+            <li>ローカルキューへ保存 → 後で自動送信。</li>
+            <li>client_event_idで重複排除。</li>
+            <li>サーバは追記のみ、競合はDUPLICATE/NEEDS_RETRY/REJECTEDで返す。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>画像/書類の画質パイプライン</h2>
+          <ul>
+            <li>撮影直後にプレビュー生成（端末内）。</li>
+            <li>原本はバックグラウンド送信。</li>
+            <li>PDFは先頭ページを先に返す。</li>
+            <li>通信断はキューに残して再送。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>外部API連携（拡張）</h2>
+          <ul>
+            <li>気象庁API: 雨天時の工程リスケジュール提案。</li>
+            <li>Google Maps API: 現場位置/測点の記録。</li>
+            <li>Vision API: 黒板OCRと自動分類。</li>
+            <li>Speech-to-Text: 音声入力のテキスト化。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>環境の答え（質問への結論）</h2>
+          <p>現状の作りたいものを耐える構成は、モバイルはReact Native、APIはNode.js、PDF/OCRはPython、CSV/マスターはGASのハイブリッドが最短。</p>
+          <p>デプロイ先は、フロントと共有ページはVercel、APIとジョブはCloud Run/Functions、DBはCloud SQL、ストレージはGCS/AWSが最適。</p>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">実装は「止めない・待たせない・後で完了」を最優先</div>
+  </body>
+</html>

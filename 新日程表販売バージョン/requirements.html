@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>要件 | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>要件</h1>
+          <p>目的・制約・対象範囲・必須機能を固定</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="index.html">概要</a>
+          <a class="button ghost" href="spec.html">最終仕様</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>対象ユーザーと前提</h2>
+          <ul>
+            <li>ITに弱い／FAX中心／スマホ不慣れ／面倒はやらない／せっかち／自分の仕事しかやらない層。</li>
+            <li>想定ユーザー数: 50人以下が中心（レンジは〜20 / 〜100 / 100〜500 / 500+を想定可能）。</li>
+            <li>重処理: 1つのデータから複数の帳票生成、PDF作成、巨大PDF保存/閲覧、現場調査写真の閲覧。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>絶対条件</h2>
+          <ul>
+            <li>取引先はSMS/LINEで入る必要なしで書類閲覧できる（共有リンク方式）。</li>
+            <li>現場×相手（取引先/下請/仕入）ごとに「連絡ノート（時系列）」を持つ。</li>
+            <li>送信はOS共有シート中心（LINE/Gmail/メール/SMSなど自由）。</li>
+            <li>既存の予定表/取引先/日報/見積/CSV機能は壊さない。</li>
+            <li>UI文言は短い動詞・責めない文言で監査。</li>
+            <li>体感0遅延（入力が止まらない・待たせない・後で完了）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>必須機能要件（PR）</h2>
+          <h3>PR-1: 連絡ノート</h3>
+          <ul>
+            <li>Thread = 現場 × 相手（取引先/下請/仕入）。</li>
+            <li>時系列イベント: 受領/送信/写真/メモ/工程/日報/訂正/取り消し。</li>
+            <li>送る: OS共有シートでLINE/Gmail/メール/SMSへ。</li>
+            <li>もらう: 外部アプリ → 共有 → 本アプリ（現場・相手の2択）。</li>
+            <li>共有リンク: 期限（デフォルト7日）、即時失効、閲覧ログ（「見た記録」以外の表現は禁止）。</li>
+          </ul>
+
+          <h3>PR-2: 外注区分フィルター</h3>
+          <ul>
+            <li>マスター/CSVに「区分」列を追加（互換は欠損時にその他）。</li>
+            <li>機械・資材と同様のフィルターと検索。</li>
+          </ul>
+
+          <h3>PR-3: 工種×講習の累計表示</h3>
+          <ul>
+            <li>期間切替（当月/年度/全期間）。</li>
+            <li>実施回数/実施人数の累計。</li>
+          </ul>
+
+          <h3>PR-4: 日報累計表示</h3>
+          <ul>
+            <li>人工/機械/資材/外注/原価の累計。</li>
+            <li>今日分の差分表示。</li>
+          </ul>
+
+          <h3>PR-5: 迷いゼロ導線</h3>
+          <ul>
+            <li>3画面原則: 今日 / 連絡 / 日報・写真。</li>
+            <li>7ステップ: 日程 → 作業員 → 機械 → 資材 → 外注 → 確認 → 提出。</li>
+            <li>進捗バー、未入力の可視化、次にやること表示。</li>
+          </ul>
+
+          <h3>PR-6: 画質/品質</h3>
+          <ul>
+            <li>写真はプレビュー先行＋原本をバックグラウンド送信。</li>
+            <li>PDF/画像の可読性基準を明記（A4で文字高さ12px以上）。</li>
+            <li>通信が弱い現場で止まらない（オフラインキュー）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>エンジニアリング・ガードレール</h2>
+          <ul>
+            <li>iOS/Android 同時リリース。</li>
+            <li>対応OSは広く、体感0と安定性を壊す下限は許可しない。</li>
+            <li>サーバ中心、ローカルファーストは同期キューで補完。</li>
+            <li>重い処理（PDF生成/OCR/サムネ生成）は非同期ジョブ。</li>
+            <li>添付はbase64禁止、保存してURL返却。</li>
+            <li>APIは冪等（Idempotency-Key）。</li>
+            <li>レート制限、監査ログ、trace_idを標準化。</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">要件は全ページの前提として固定</div>
+  </body>
+</html>

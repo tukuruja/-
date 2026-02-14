@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>新日程表販売バージョン | 統合仕様・実装計画</title>
+    <meta name="description" content="建設業に特化した予定表＋施工管理＋連絡ノート＋日報＋マスター/CSVの統合仕様書。" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>新日程表販売バージョン 統合仕様</h1>
+          <p>建設業に特化した 予定表 + 施工管理 + 連絡ノート + 日報 + マスター/CSV</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="index.html">概要</a>
+          <a class="button ghost" href="deployment.html">デプロイ</a>
+          <a class="button secondary" href="reference.html">参照原文</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>要約（3行）</h2>
+          <p>1. SMS/LINEで入る必要のない共有リンクと連絡ノートで、取引先の摩擦をゼロ化し証跡を自動化する。</p>
+          <p>2. 予定登録 → 作業員/機械/資材/外注追加 → 日報提出を3画面内の7ステップで説明不要にする。</p>
+          <p>3. 写真/書類は高品質2段階アップロード＋非同期で体感0遅延、既存機能は非破壊で追加。</p>
+        </section>
+
+        <section class="section">
+          <h2>ゴール</h2>
+          <div class="grid">
+            <div class="card">
+              <h4>迷いゼロ</h4>
+              <p>予定登録から日報提出まで、説明なしで完了する導線を固定。</p>
+            </div>
+            <div class="card">
+              <h4>取引先はSMS/LINEで入る必要なし</h4>
+              <p>共有リンクで書類閲覧、証跡だけを自動で残す。</p>
+            </div>
+            <div class="card">
+              <h4>体感0遅延</h4>
+              <p>入力を止めず、重処理は裏で完了させる。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>絶対条件（非交渉）</h2>
+          <ul>
+            <li>取引先はSMS/LINEで入る必要なしで閲覧できる共有リンク方式。</li>
+            <li>現場×相手（取引先/下請/仕入）ごとの連絡ノートを時系列で統合。</li>
+            <li>送信はOS共有シート中心でLINE/Gmail/メール/SMS等へ。</li>
+            <li>既存の予定/日報/見積/CSV等は壊さず追加で成立。</li>
+            <li>UI文言は短い動詞、責めない表現に固定。</li>
+            <li>本当の0秒ではなく体感0（止めない・待たせない）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>スコープ（追加・改善対象）</h2>
+          <ul>
+            <li>連絡ノート + 共有リンク + 閲覧ログ。</li>
+            <li>予定登録〜日報提出の迷いゼロ導線（3画面原則）。</li>
+            <li>外注の区分フィルター（マスター/CSV連携）。</li>
+            <li>工種×講習の累計表示（期間切替）。</li>
+            <li>日報の累計表示（人工/機械/資材/外注/原価）。</li>
+            <li>写真/書類の画質改善（圧縮/プレビュー/通信）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>意思決定フレーム</h2>
+          <div class="callout">
+            <strong>評価軸（重み）</strong>
+            採用率/継続率×3、体感速度×3、迷いの少なさ×3、証跡/監査×2、セキュリティ×2、実装難易度×1、運用コスト×1、既存互換×2。
+          </div>
+          <p>主要意思決定の採点結果と採用案は、各詳細ページに掲載。</p>
+        </section>
+
+        <section class="section">
+          <h2>守り（非交渉ルール）</h2>
+          <ul>
+            <li>SMS/LINEで入る必要なしの閲覧を維持、PIN/期限/失効/閲覧ログは必須。</li>
+            <li>現場操作は3タップ以内、文字入力は最小。</li>
+            <li>送信はOS共有シート、受信は共有取り込み。</li>
+            <li>重い処理は非同期、画面は止めない。</li>
+            <li>添付は保存＋URL、base64禁止。</li>
+            <li>時系列は追記のみ（訂正/取消はイベント）。</li>
+            <li>閲覧表現は「見た記録」のみに統一。</li>
+            <li>オフラインでも記録は止めない。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>品質ゲート（PASS）</h2>
+          <div class="checklist">
+            <label><input type="checkbox" checked /> 3画面以内で主要タスクが完了する</label>
+            <label><input type="checkbox" checked /> 予定→追加→日報提出が説明無しで成立する</label>
+            <label><input type="checkbox" checked /> 取引先はSMS/LINEで入る必要なしで閲覧（期限/失効/ログ）</label>
+            <label><input type="checkbox" checked /> 送信は共有シート中心</label>
+            <label><input type="checkbox" checked /> 外注区分フィルターが機械/資材と同等</label>
+            <label><input type="checkbox" checked /> 工種×講習累計が表示できる</label>
+            <label><input type="checkbox" checked /> 日報累計と差分が分かる</label>
+            <label><input type="checkbox" checked /> 画質が担保され通信弱者でも止まらない</label>
+            <label><input type="checkbox" checked /> 既存機能を壊さない互換策を明記</label>
+            <label><input type="checkbox" checked /> OpenAPI/ERD/テスト/文言辞書が矛盾しない</label>
+          </div>
+          <p><strong>FINALIZED: YES</strong></p>
+        </section>
+
+        <section class="section">
+          <h2>本番URL</h2>
+          <ul>
+            <li>Production Alias: https://shinnitteihyo-app.vercel.app</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">新日程表販売バージョン | 統合仕様ドキュメント</div>
+  </body>
+</html>

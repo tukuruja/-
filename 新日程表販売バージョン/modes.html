@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>会社モード | 新日程表販売バージョン</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>会社モード</h1>
+          <p>かんたん送信 / あんしん送信 の2モード設計</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="spec.html">最終仕様</a>
+          <a class="button ghost" href="ui.html">UI/文言</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav">
+          <small>Overview</small>
+          <a href="index.html">概要</a>
+          <a href="requirements.html">要件</a>
+          <a href="research.html">世界調査</a>
+          <a href="experts.html">30専門家</a>
+          <small>Design</small>
+          <a href="spec.html">最終仕様</a>
+          <a href="ui.html">UI/文言</a>
+          <a href="modes.html">会社モード</a>
+          <small>Engineering</small>
+          <a href="engineering.html">実装/環境</a>
+          <a href="api.html">OpenAPI</a>
+          <a href="db.html">DB/ERD</a>
+          <a href="operations.html">運用/監視</a>
+          <small>Validation</small>
+          <a href="testing.html">テスト/検証</a>
+          <a href="roadmap.html">ロードマップ</a>
+          <a href="templates.html">工事テンプレ</a>
+          <a href="reference.html">参照原文</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="section">
+          <h2>目的</h2>
+          <p>セキュリティ重視と使いやすさ重視の両立を、会社単位で切り替える。</p>
+        </section>
+
+        <section class="section">
+          <h2>モード比較</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>かんたん送信</th>
+                <th>あんしん送信</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>送信デフォルト</td>
+                <td>ファイル直送（OS共有）優先</td>
+                <td>リンク送信のみ</td>
+              </tr>
+              <tr>
+                <td>リンク有効期限</td>
+                <td>180日</td>
+                <td>7日</td>
+              </tr>
+              <tr>
+                <td>失効</td>
+                <td>手動削除</td>
+                <td>ワンタップ失効</td>
+              </tr>
+              <tr>
+                <td>閲覧ログ</td>
+                <td>保存するが表示は簡易</td>
+                <td>詳細表示（見た記録）</td>
+              </tr>
+              <tr>
+                <td>透かし</td>
+                <td>なし</td>
+                <td>あり（案件名/日付）</td>
+              </tr>
+              <tr>
+                <td>例外操作</td>
+                <td>「この送信だけあんしん」ボタン</td>
+                <td>「この送信だけかんたん」ボタン</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>共通仕様</h2>
+          <ul>
+            <li>署名URLは常に短時間（10分）で発行し直す。</li>
+            <li>共有リンクはサーバ経由リダイレクト。</li>
+            <li>改ざん防止のためファイルハッシュをDBに保存。</li>
+            <li>アクセスログは両モードで記録（表示の深さだけ違う）。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>会社設定（CONFIG）</h2>
+          <div class="code">{
+  companyMode: \"easy\" | \"secure\",
+  shareDefault: { easy: \"fileFirst\", secure: \"linkOnly\" },
+  linkExpiration: { easy: 15552000, secure: 604800 },
+  notificationLevel: \"simple\" | \"standard\" | \"advanced\",
+  fontSize: 18 | 24 | 28,
+  voiceGuide: true | false
+}</div>
+        </section>
+
+        <section class="section">
+          <h2>設定UI文言</h2>
+          <ul>
+            <li>モード名は「かんたん送信」「あんしん送信」に固定。</li>
+            <li>選択時に差分を1画面で表示。</li>
+            <li>会社のデフォルト設定は管理者のみ変更可能。</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <div class="footer">モードは会社単位、例外送信は個別選択</div>
+  </body>
+</html>
