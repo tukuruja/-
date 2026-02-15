@@ -12,7 +12,7 @@
       <div class="topbar">
         <div class="brand">
           <h1>テスト/検証</h1>
-          <p>説明無しで成立するかの過酷検証</p>
+          <p>100名・異業種を含む「説明なし操作」検証</p>
         </div>
         <div class="actions">
           <a class="button" href="roadmap.html">ロードマップ</a>
@@ -28,7 +28,7 @@
           <a href="index.html">概要</a>
           <a href="requirements.html">要件</a>
           <a href="research.html">世界調査</a>
-          <a href="experts.html">30専門家</a>
+          <a href="experts.html">200専門家</a>
           <small>Design</small>
           <a href="spec.html">最終仕様</a>
           <a href="ui.html">UI/文言</a>
@@ -48,63 +48,63 @@
 
       <main>
         <section class="section">
-          <h2>テスター属性</h2>
+          <h2>100名テスター構成</h2>
+          <table>
+            <thead><tr><th>カテゴリ</th><th>人数</th><th>例</th></tr></thead>
+            <tbody>
+              <tr><td>建設業（管理/監督/職人）</td><td>40</td><td>現場監督、職長、協力会社担当</td></tr>
+              <tr><td>事務/経理/総務</td><td>15</td><td>建設事務、バックオフィス担当</td></tr>
+              <tr><td>他業種（物流/製造/小売/医療/教育）</td><td>20</td><td>建設業未経験の一般業務担当</td></tr>
+              <tr><td>高齢層（55歳以上）</td><td>15</td><td>紙運用中心のユーザー</td></tr>
+              <tr><td>若年層（18〜29歳）</td><td>10</td><td>スマホ中心のユーザー</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>無説明テスト課題（全員共通）</h2>
+          <ol>
+            <li>「今日」から担当現場を開く（30秒以内）。</li>
+            <li>LINEまたはメール本文を「連絡」に取り込み保存する（60秒以内）。</li>
+            <li>写真3枚を連絡に追加し、送信履歴を確認する（90秒以内）。</li>
+            <li>日報を提出し、累計値の反映を確認する（120秒以内）。</li>
+            <li>共有リンクの期限切れ挙動を確認する（60秒以内）。</li>
+          </ol>
+        </section>
+
+        <section class="section">
+          <h2>合格判定（全員成功が条件）</h2>
           <ul>
-            <li>建設会社A: 管理2名 + 作業員1名、完全FAX主義。</li>
-            <li>建設会社B: 管理2名 + 作業員1名、LINE誤送信のトラブル経験あり。</li>
-            <li>追加5名: 18歳監督/22歳監督/63歳職人/32歳転職者/50代パート事務。</li>
+            <li>100名全員が5課題を完了（未達者0名）。</li>
+            <li>ヘルプ参照/口頭説明なしで達成。</li>
+            <li>誤送信・誤削除・復旧不能の重大操作ミス0件。</li>
+            <li>「見た記録」「送信履歴」「提出状態」を各自確認できる。</li>
           </ul>
         </section>
 
         <section class="section">
-          <h2>検証タスク（説明/マニュアル無し）</h2>
-          <ul>
-            <li>今日→現場を開く（30秒以内）。</li>
-            <li>LINE本文を共有→連絡へ入れる（60秒以内）。</li>
-            <li>Gmail添付PDFを共有→連絡へ入れる（60秒以内）。</li>
-            <li>写真3枚→連絡へ入れる（60秒以内）。</li>
-            <li>連絡→送る→LINEで送信（60秒以内）。</li>
-            <li>圏外で写真→保存→自動送信（操作追加ゼロ）。</li>
-            <li>日報提出後、累計が増えることを確認（2分以内）。</li>
-            <li>SMSリンク→到着報告（60秒以内、名前入力無し）。</li>
-          </ul>
+          <h2>未達時の再実行ループ（再激論）</h2>
+          <div class="callout">
+            <p><strong>ルール:</strong> 1名でも失敗したら、機能追加ではなく導線/UI文言を優先改善し、専門家会議を再実施する。</p>
+            <ol>
+              <li>失敗操作を録画/ログで特定（どこで迷ったかを定量化）。</li>
+              <li>200専門家で代替案を3案比較し、最小変更で再設計。</li>
+              <li>同一条件で再テストし、全員成功まで繰り返す。</li>
+            </ol>
+          </div>
         </section>
 
         <section class="section">
-          <h2>品質合格基準（Definition of Done）</h2>
+          <h2>監査結果（公開用）</h2>
           <ul>
-            <li>63歳職人: 2回目でT2/T4/T5を説明なしで達成。</li>
-            <li>18歳監督: 初回でT1〜T5を達成。</li>
-            <li>迷い回数は0回、離脱は0回。</li>
-            <li>誤操作率は全操作の5%未満。</li>
-            <li>「面倒」「小さい」「分からない」発言が出ない。</li>
-          </ul>
-        </section>
-
-        <section class="section">
-          <h2>罵倒/言いがかり対策（仕様で封じる）</h2>
-          <ul>
-            <li>「送ったのに届いてない」→ 送信履歴/再送ボタン。</li>
-            <li>「見た/見てない」→ 見た記録ログを表示（「見た記録」以外の表現は禁止）。</li>
-            <li>「写真が消えた」→ 端末保存＋同期キュー。</li>
-            <li>「勝手に送った」→ 送信者/端末/時刻を記録。</li>
-            <li>「字が小さい」→ デフォルト1.5倍のフォント。</li>
-            <li>「押せない」→ タッチターゲット48dp以上。</li>
-          </ul>
-        </section>
-
-        <section class="section">
-          <h2>同期テストケース</h2>
-          <ul>
-            <li>正常: オンラインで連絡追加 → 即同期。</li>
-            <li>競合: 同一client_event_id → ACCEPTED_AS_EXISTING。</li>
-            <li>電波断: アップロード途中で切断 → 再送。</li>
-            <li>再送: NEEDS_RETRY後に自動成功。</li>
+            <li>判定方法・ログ取得方法・再試験条件を文書化済み。</li>
+            <li>全員成功を出荷条件として固定（例外出荷を禁止）。</li>
+            <li>結果は運用/監視ページに引き継ぎ、継続監査する。</li>
           </ul>
         </section>
       </main>
     </div>
 
-    <div class="footer">検証で落ちたら機能追加ではなくUI修正</div>
+    <div class="footer">1名でも失敗なら再設計して再試験</div>
   </body>
 </html>

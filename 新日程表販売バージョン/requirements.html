@@ -28,7 +28,7 @@
           <a href="index.html">概要</a>
           <a href="requirements.html">要件</a>
           <a href="research.html">世界調査</a>
-          <a href="experts.html">30専門家</a>
+          <a href="experts.html">200専門家</a>
           <small>Design</small>
           <a href="spec.html">最終仕様</a>
           <a href="ui.html">UI/文言</a>
@@ -120,8 +120,9 @@
             <li>サーバ中心、ローカルファーストは同期キューで補完。</li>
             <li>重い処理（PDF生成/OCR/サムネ生成）は非同期ジョブ。</li>
             <li>添付はbase64禁止、保存してURL返却。</li>
-            <li>APIは冪等（Idempotency-Key）。</li>
-            <li>レート制限、監査ログ、trace_idを標準化。</li>
+            <li>APIは冪等（Idempotency-Key必須運用）。</li>
+            <li>レート制限（SMS要求 5/分、共有リンク閲覧 60/分/IP、API 120/分/ユーザー）を標準化。</li>
+            <li>監査ログ、trace_idを標準化。</li>
           </ul>
         </section>
       </main>

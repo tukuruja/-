@@ -30,7 +30,7 @@
           <a href="index.html">概要</a>
           <a href="requirements.html">要件</a>
           <a href="research.html">世界調査</a>
-          <a href="experts.html">30専門家</a>
+          <a href="experts.html">200専門家</a>
           <small>Design</small>
           <a href="spec.html">最終仕様</a>
           <a href="ui.html">UI/文言</a>
@@ -54,6 +54,24 @@
           <p>1. SMS/LINEで入る必要のない共有リンクと連絡ノートで、取引先の摩擦をゼロ化し証跡を自動化する。</p>
           <p>2. 予定登録 → 作業員/機械/資材/外注追加 → 日報提出を3画面内の7ステップで説明不要にする。</p>
           <p>3. 写真/書類は高品質2段階アップロード＋非同期で体感0遅延、既存機能は非破壊で追加。</p>
+        </section>
+
+
+        <section class="section">
+          <h2>このアプリをどんなアプリにしたいか（意図の整理）</h2>
+          <table>
+            <thead>
+              <tr><th>観点</th><th>目指す状態</th><th>非交渉ルール</th><th>代表機能</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>取引先との摩擦</td><td>ログイン無しで即閲覧・説明不要</td><td>PIN/期限/失効/見た記録を必須化</td><td>共有リンク、公開ページ、見た記録</td></tr>
+              <tr><td>現場の操作性</td><td>3画面で迷わず完了</td><td>主要操作は3タップ以内</td><td>今日 / 連絡 / 日報・写真、7ステップ</td></tr>
+              <tr><td>体感速度</td><td>入力を止めない</td><td>重い処理は同期しない</td><td>プレビュー先行、原本バックグラウンド送信</td></tr>
+              <tr><td>証跡と監査</td><td>送受信・閲覧・訂正が追跡可能</td><td>削除でなく追記（訂正/取消）</td><td>連絡ノート時系列、deliveries、監査ログ</td></tr>
+              <tr><td>オフライン耐性</td><td>圏外でも記録停止ゼロ</td><td>同期キューと重複排除を標準化</td><td>client_event_id、NEEDS_RETRY再送</td></tr>
+              <tr><td>既存資産の継続</td><td>既存運用を壊さず段階移行</td><td>予定/日報/見積/CSVは非破壊拡張</td><td>外注区分追加、互換CSV取込</td></tr>
+            </tbody>
+          </table>
         </section>
 
         <section class="section">
