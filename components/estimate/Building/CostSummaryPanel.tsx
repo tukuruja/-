@@ -165,10 +165,11 @@ export function CostSummaryPanel({
 
       <style jsx>{`
         .cost-summary-panel {
-          background: white;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.5rem;
+          background: var(--card, #fffdf9);
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: var(--radius-sm, 12px);
           padding: 1rem;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
         }
 
         .panel-title {
@@ -176,7 +177,8 @@ export function CostSummaryPanel({
           font-weight: 600;
           margin: 0 0 1rem 0;
           padding-bottom: 0.5rem;
-          border-bottom: 2px solid var(--color-primary, #2563eb);
+          border-bottom: 2px solid var(--accent, #0a6a5b);
+          color: var(--ink, #1d1916);
         }
 
         .summary-grid {
@@ -187,12 +189,12 @@ export function CostSummaryPanel({
 
         .summary-section {
           padding: 0.75rem;
-          background: var(--color-surface, #f9fafb);
-          border-radius: 0.375rem;
+          background: var(--bg-accent, #f9f4ec);
+          border-radius: 10px;
         }
 
         .summary-section.total {
-          background: var(--color-primary, #2563eb);
+          background: var(--accent, #0a6a5b);
           color: white;
         }
 
@@ -200,7 +202,7 @@ export function CostSummaryPanel({
           font-size: 0.75rem;
           font-weight: 600;
           text-transform: uppercase;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           margin: 0 0 0.5rem 0;
         }
 
@@ -218,8 +220,8 @@ export function CostSummaryPanel({
         .summary-row.highlight {
           padding: 0.5rem;
           margin: 0.25rem -0.5rem;
-          background: rgba(0, 0, 0, 0.05);
-          border-radius: 0.25rem;
+          background: rgba(10, 106, 91, 0.08);
+          border-radius: 6px;
         }
 
         .summary-row.grand-total {
@@ -228,6 +230,7 @@ export function CostSummaryPanel({
 
         .row-label {
           font-size: 0.875rem;
+          color: var(--ink, #1d1916);
         }
 
         .row-value {
@@ -237,27 +240,27 @@ export function CostSummaryPanel({
         }
 
         .row-value.cost {
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
 
         .row-value.selling {
-          color: var(--color-text, #111827);
+          color: var(--ink, #1d1916);
         }
 
         .row-value.margin.good {
-          color: var(--color-success, #16a34a);
+          color: var(--accent, #0a6a5b);
         }
 
         .row-value.margin.warning {
-          color: var(--color-warning, #ca8a04);
+          color: var(--accent-2, #c65e1a);
         }
 
         .row-value.margin.low {
-          color: var(--color-error, #dc2626);
+          color: #dc2626;
         }
 
         .row-value.discount {
-          color: var(--color-error, #dc2626);
+          color: #dc2626;
         }
 
         .margin-rate {
@@ -279,22 +282,26 @@ export function CostSummaryPanel({
         .row-select {
           width: 120px;
           padding: 0.25rem 0.5rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.25rem;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 6px;
           font-size: 0.875rem;
           text-align: right;
+          font-family: inherit;
+          background: var(--card, #fffdf9);
+          color: var(--ink, #1d1916);
+          transition: border-color 0.2s;
         }
 
         .row-input:focus,
         .row-select:focus {
           outline: none;
-          border-color: var(--color-primary, #2563eb);
+          border-color: var(--accent, #0a6a5b);
         }
 
         .options-summary {
           margin-top: 1rem;
           padding-top: 1rem;
-          border-top: 1px solid var(--color-border, #e5e7eb);
+          border-top: 1px solid var(--border, #e6dbcf);
         }
 
         .options-list {
@@ -308,26 +315,27 @@ export function CostSummaryPanel({
           justify-content: space-between;
           align-items: center;
           padding: 0.5rem;
-          background: var(--color-surface, #f9fafb);
-          border-radius: 0.25rem;
+          background: var(--bg-accent, #f9f4ec);
+          border-radius: 6px;
           font-size: 0.875rem;
         }
 
         .option-row.selected {
-          background: var(--color-success-light, #dcfce7);
+          background: rgba(10, 106, 91, 0.12);
         }
 
         .option-name {
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
 
         .option-row.selected .option-name {
-          color: var(--color-success, #16a34a);
+          color: var(--accent, #0a6a5b);
         }
 
         .option-amount {
           font-weight: 600;
           font-variant-numeric: tabular-nums;
+          color: var(--ink, #1d1916);
         }
       `}</style>
     </div>

@@ -121,10 +121,11 @@ export function SectionAccordion({
 
       <style jsx>{`
         .section-accordion {
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.5rem;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: var(--radius-sm, 12px);
           margin-bottom: 0.5rem;
-          background: white;
+          background: var(--card, #fffdf9);
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
         }
 
         .section-header {
@@ -134,16 +135,17 @@ export function SectionAccordion({
           padding: 0.75rem 1rem;
           cursor: pointer;
           user-select: none;
-          background: var(--color-surface, #f9fafb);
-          border-radius: 0.5rem 0.5rem 0 0;
+          background: var(--bg-accent, #f9f4ec);
+          border-radius: var(--radius-sm, 12px) var(--radius-sm, 12px) 0 0;
+          transition: background 0.2s ease;
         }
 
         .section-accordion.collapsed .section-header {
-          border-radius: 0.5rem;
+          border-radius: var(--radius-sm, 12px);
         }
 
         .section-header:hover {
-          background: var(--color-surface-hover, #f3f4f6);
+          background: rgba(10, 106, 91, 0.08);
         }
 
         .section-header-left {
@@ -158,7 +160,7 @@ export function SectionAccordion({
           padding: 0.25rem;
           cursor: pointer;
           font-size: 0.75rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
 
         .section-info {
@@ -169,15 +171,17 @@ export function SectionAccordion({
 
         .section-code {
           font-size: 0.75rem;
-          padding: 0.125rem 0.375rem;
-          background: var(--color-primary-light, #dbeafe);
-          color: var(--color-primary, #2563eb);
-          border-radius: 0.25rem;
+          padding: 0.125rem 0.5rem;
+          background: rgba(10, 106, 91, 0.12);
+          color: var(--accent, #0a6a5b);
+          border-radius: 6px;
+          font-weight: 500;
         }
 
         .section-name {
           font-weight: 600;
           font-size: 1rem;
+          color: var(--ink, #1d1916);
         }
 
         .section-header-right {
@@ -198,7 +202,7 @@ export function SectionAccordion({
         .selling-label,
         .margin-label {
           font-size: 0.625rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           text-transform: uppercase;
         }
 
@@ -207,6 +211,7 @@ export function SectionAccordion({
           font-size: 0.875rem;
           font-weight: 500;
           font-variant-numeric: tabular-nums;
+          color: var(--ink, #1d1916);
         }
 
         .margin-value {
@@ -215,15 +220,15 @@ export function SectionAccordion({
         }
 
         .margin-value.good {
-          color: var(--color-success, #16a34a);
+          color: var(--accent, #0a6a5b);
         }
 
         .margin-value.warning {
-          color: var(--color-warning, #ca8a04);
+          color: var(--accent-2, #c65e1a);
         }
 
         .margin-value.low {
-          color: var(--color-error, #dc2626);
+          color: #dc2626;
         }
 
         .delete-button {
@@ -232,7 +237,7 @@ export function SectionAccordion({
           padding: 0.25rem 0.5rem;
           cursor: pointer;
           font-size: 1.25rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           opacity: 0;
           transition: opacity 0.2s;
         }
@@ -242,18 +247,18 @@ export function SectionAccordion({
         }
 
         .delete-button:hover {
-          color: var(--color-error, #dc2626);
+          color: #dc2626;
         }
 
         .section-content {
           padding: 1rem;
-          border-top: 1px solid var(--color-border, #e5e7eb);
+          border-top: 1px solid var(--border, #e6dbcf);
         }
 
         .empty-section {
           text-align: center;
           padding: 2rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
 
         .empty-hint {

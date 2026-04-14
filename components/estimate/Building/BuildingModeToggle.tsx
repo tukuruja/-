@@ -55,9 +55,10 @@ export function BuildingModeToggle({
         .toggle-container {
           display: flex;
           gap: 0.5rem;
-          background: var(--color-surface, #f5f5f5);
-          padding: 0.25rem;
-          border-radius: 0.5rem;
+          background: var(--bg-accent, #f9f4ec);
+          padding: 6px;
+          border-radius: var(--radius-sm, 12px);
+          border: 1px solid var(--border, #e6dbcf);
         }
 
         .toggle-button {
@@ -67,20 +68,23 @@ export function BuildingModeToggle({
           align-items: center;
           padding: 0.75rem 1rem;
           border: 2px solid transparent;
-          border-radius: 0.375rem;
+          border-radius: 10px;
           background: transparent;
           cursor: pointer;
           transition: all 0.2s ease;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
+          color: var(--muted, #6a6259);
         }
 
         .toggle-button:hover:not(:disabled) {
-          background: var(--color-surface-hover, #ebebeb);
+          background: rgba(10, 106, 91, 0.08);
+          color: var(--ink, #1d1916);
         }
 
         .toggle-button.active {
-          background: var(--color-primary, #2563eb);
-          color: white;
-          border-color: var(--color-primary-dark, #1d4ed8);
+          background: var(--accent, #0a6a5b);
+          color: #fff;
+          border-color: var(--accent, #0a6a5b);
         }
 
         .toggle-button:disabled {

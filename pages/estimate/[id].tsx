@@ -69,37 +69,43 @@ function EstimateTypeSelector({ value, onChange, disabled }: EstimateTypeSelecto
           display: flex;
           align-items: center;
           gap: 0.75rem;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
         }
         .selector-label {
           font-size: 0.875rem;
           font-weight: 600;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
         .selector-buttons {
           display: flex;
           gap: 0.25rem;
-          background: var(--color-surface, #f5f5f5);
-          padding: 0.25rem;
-          border-radius: 0.5rem;
+          background: var(--bg-accent, #f9f4ec);
+          padding: 6px;
+          border-radius: var(--radius-sm, 12px);
+          border: 1px solid var(--border, #e6dbcf);
         }
         .type-button {
           display: flex;
           align-items: center;
           gap: 0.375rem;
           padding: 0.5rem 1rem;
-          border: none;
-          border-radius: 0.375rem;
+          border: 2px solid transparent;
+          border-radius: 10px;
           background: transparent;
           cursor: pointer;
           font-size: 0.875rem;
-          transition: all 0.2s;
+          font-family: inherit;
+          color: var(--muted, #6a6259);
+          transition: all 0.2s ease;
         }
         .type-button:hover:not(:disabled) {
-          background: var(--color-surface-hover, #ebebeb);
+          background: rgba(10, 106, 91, 0.08);
+          color: var(--ink, #1d1916);
         }
         .type-button.active {
-          background: var(--color-primary, #2563eb);
+          background: var(--accent, #0a6a5b);
           color: white;
+          border-color: var(--accent, #0a6a5b);
         }
         .type-button:disabled {
           opacity: 0.5;
@@ -189,10 +195,11 @@ function BuildingHeader({ estimate, onUpdate, readOnly }: BuildingHeaderProps) {
       <style jsx>{`
         .building-header {
           padding: 1rem;
-          background: var(--color-surface, #f9fafb);
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.5rem;
+          background: var(--bg-accent, #f9f4ec);
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: var(--radius-sm, 12px);
           margin-bottom: 1rem;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
         }
         .header-fields {
           display: grid;
@@ -207,19 +214,23 @@ function BuildingHeader({ estimate, onUpdate, readOnly }: BuildingHeaderProps) {
         .field-group label {
           font-size: 0.75rem;
           font-weight: 600;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
         .field-group select,
         .field-group input {
           padding: 0.5rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.375rem;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 8px;
           font-size: 0.875rem;
+          font-family: inherit;
+          background: var(--card, #fffdf9);
+          color: var(--ink, #1d1916);
+          transition: border-color 0.2s;
         }
         .field-group select:focus,
         .field-group input:focus {
           outline: none;
-          border-color: var(--color-primary, #2563eb);
+          border-color: var(--accent, #0a6a5b);
         }
       `}</style>
     </div>
@@ -664,6 +675,9 @@ export default function EstimatePage({ estimateId }: EstimatePageProps) {
           max-width: 1200px;
           margin: 0 auto;
           padding: 1.5rem;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
+          background: var(--bg, #f4efe8);
+          min-height: 100vh;
         }
 
         .page-header {
@@ -684,15 +698,17 @@ export default function EstimatePage({ estimateId }: EstimatePageProps) {
           display: flex;
           align-items: center;
           gap: 0.75rem;
+          color: var(--ink, #1d1916);
         }
 
         .status-badge {
           font-size: 0.75rem;
           font-weight: 500;
-          padding: 0.25rem 0.5rem;
-          background: var(--color-surface, #e5e7eb);
-          border-radius: 0.25rem;
-          color: var(--color-text-secondary, #6b7280);
+          padding: 0.25rem 0.625rem;
+          background: var(--bg-accent, #f9f4ec);
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 6px;
+          color: var(--muted, #6a6259);
         }
 
         .header-actions {
@@ -703,25 +719,32 @@ export default function EstimatePage({ estimateId }: EstimatePageProps) {
 
         .view-toggle {
           padding: 0.5rem 1rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          background: white;
+          border: 1px solid var(--border, #e6dbcf);
+          background: var(--card, #fffdf9);
           cursor: pointer;
           font-size: 0.875rem;
+          font-family: inherit;
+          color: var(--ink, #1d1916);
+          transition: all 0.2s;
         }
 
         .view-toggle:first-child {
-          border-radius: 0.375rem 0 0 0.375rem;
+          border-radius: 8px 0 0 8px;
         }
 
         .view-toggle:nth-child(2) {
-          border-radius: 0 0.375rem 0.375rem 0;
+          border-radius: 0 8px 8px 0;
           border-left: none;
         }
 
+        .view-toggle:hover:not(.active) {
+          background: rgba(10, 106, 91, 0.08);
+        }
+
         .view-toggle.active {
-          background: var(--color-primary, #2563eb);
+          background: var(--accent, #0a6a5b);
           color: white;
-          border-color: var(--color-primary, #2563eb);
+          border-color: var(--accent, #0a6a5b);
         }
 
         .cost-toggle {
@@ -731,6 +754,7 @@ export default function EstimatePage({ estimateId }: EstimatePageProps) {
           font-size: 0.875rem;
           cursor: pointer;
           margin-left: 1rem;
+          color: var(--ink, #1d1916);
         }
 
         .estimate-content {

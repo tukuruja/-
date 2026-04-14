@@ -220,16 +220,17 @@ export function EstimatePreview({
           max-width: 800px;
           margin: 0 auto;
           padding: 2rem;
-          background: white;
-          font-family: 'Noto Sans JP', sans-serif;
+          background: var(--card, #fffdf9);
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
           line-height: 1.6;
+          border-radius: var(--radius, 18px);
         }
 
         .preview-header {
           text-align: center;
           margin-bottom: 2rem;
           padding-bottom: 1rem;
-          border-bottom: 2px solid #333;
+          border-bottom: 2px solid var(--ink, #1d1916);
         }
 
         .preview-title {
@@ -237,6 +238,7 @@ export function EstimatePreview({
           font-weight: 700;
           letter-spacing: 0.5em;
           margin: 0 0 1rem 0;
+          color: var(--ink, #1d1916);
         }
 
         .preview-meta {
@@ -252,7 +254,7 @@ export function EstimatePreview({
         }
 
         .meta-label {
-          color: #666;
+          color: var(--muted, #6a6259);
         }
 
         .preview-section {
@@ -264,21 +266,22 @@ export function EstimatePreview({
           justify-content: space-between;
           align-items: flex-start;
           padding: 1rem;
-          background: #f9fafb;
-          border-radius: 0.5rem;
+          background: var(--bg-accent, #f9f4ec);
+          border-radius: var(--radius-sm, 12px);
         }
 
         .info-title {
           font-size: 1.25rem;
           margin: 0;
-          border-bottom: 1px solid #333;
+          border-bottom: 1px solid var(--ink, #1d1916);
           padding-bottom: 0.25rem;
+          color: var(--ink, #1d1916);
         }
 
         .info-subtitle {
           margin: 0.5rem 0 0 0;
           font-size: 0.875rem;
-          color: #666;
+          color: var(--muted, #6a6259);
         }
 
         .grand-total-block {
@@ -288,14 +291,14 @@ export function EstimatePreview({
         .grand-total-label {
           display: block;
           font-size: 0.75rem;
-          color: #666;
+          color: var(--muted, #6a6259);
           margin-bottom: 0.25rem;
         }
 
         .grand-total-value {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #2563eb;
+          color: var(--accent, #0a6a5b);
         }
 
         .section-title {
@@ -303,7 +306,8 @@ export function EstimatePreview({
           font-weight: 600;
           margin: 0 0 0.75rem 0;
           padding-bottom: 0.5rem;
-          border-bottom: 1px solid #e5e7eb;
+          border-bottom: 1px solid var(--border, #e6dbcf);
+          color: var(--ink, #1d1916);
         }
 
         .building-info .info-grid {
@@ -319,11 +323,12 @@ export function EstimatePreview({
 
         .item-label {
           font-size: 0.75rem;
-          color: #666;
+          color: var(--muted, #6a6259);
         }
 
         .item-value {
           font-weight: 500;
+          color: var(--ink, #1d1916);
         }
 
         .estimate-section {
@@ -334,9 +339,11 @@ export function EstimatePreview({
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 0.5rem;
-          background: #e5e7eb;
+          padding: 0.5rem 0.75rem;
+          background: var(--bg-accent, #f9f4ec);
+          border-radius: 8px;
           font-weight: 600;
+          color: var(--ink, #1d1916);
         }
 
         .items-table {
@@ -349,14 +356,15 @@ export function EstimatePreview({
         .items-table td {
           padding: 0.5rem;
           text-align: left;
-          border-bottom: 1px solid #e5e7eb;
+          border-bottom: 1px solid var(--border, #e6dbcf);
         }
 
         .items-table th {
           font-weight: 600;
-          background: #f9fafb;
+          background: var(--bg, #f4efe8);
           font-size: 0.75rem;
           text-transform: uppercase;
+          color: var(--muted, #6a6259);
         }
 
         .col-unit,
@@ -368,23 +376,24 @@ export function EstimatePreview({
         }
 
         .col-spec {
-          color: #666;
+          color: var(--muted, #6a6259);
         }
 
         .option-badge {
           display: inline-block;
-          padding: 0.125rem 0.375rem;
-          background: #dbeafe;
-          color: #2563eb;
+          padding: 0.125rem 0.5rem;
+          background: rgba(10, 106, 91, 0.12);
+          color: var(--accent, #0a6a5b);
           font-size: 0.625rem;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           margin-right: 0.5rem;
+          font-weight: 500;
         }
 
         .item-remark {
           display: block;
           font-size: 0.75rem;
-          color: #666;
+          color: var(--muted, #6a6259);
           margin-top: 0.25rem;
         }
 
@@ -400,11 +409,12 @@ export function EstimatePreview({
           display: flex;
           justify-content: space-between;
           padding: 0.5rem;
-          border-bottom: 1px solid #e5e7eb;
+          border-bottom: 1px solid var(--border, #e6dbcf);
+          color: var(--ink, #1d1916);
         }
 
         .exclusion-desc {
-          color: #666;
+          color: var(--muted, #6a6259);
           font-size: 0.875rem;
         }
 
@@ -418,17 +428,19 @@ export function EstimatePreview({
         .summary-table th,
         .summary-table td {
           padding: 0.5rem 1rem;
-          border-bottom: 1px solid #e5e7eb;
+          border-bottom: 1px solid var(--border, #e6dbcf);
         }
 
         .summary-table th {
           text-align: left;
           font-weight: 500;
+          color: var(--ink, #1d1916);
         }
 
         .summary-table td {
           text-align: right;
           font-variant-numeric: tabular-nums;
+          color: var(--ink, #1d1916);
         }
 
         .summary-table .discount td {
@@ -442,21 +454,22 @@ export function EstimatePreview({
 
         .summary-table .grand-total th,
         .summary-table .grand-total td {
-          border-bottom: 2px solid #333;
+          border-bottom: 2px solid var(--accent, #0a6a5b);
           padding-top: 1rem;
+          color: var(--accent, #0a6a5b);
         }
 
         .preview-footer {
           margin-top: 3rem;
           text-align: center;
           font-size: 0.875rem;
-          color: #666;
+          color: var(--muted, #6a6259);
         }
 
         .company-name {
           font-size: 1rem;
           font-weight: 600;
-          color: #333;
+          color: var(--ink, #1d1916);
           margin-bottom: 0.5rem;
         }
 
@@ -467,6 +480,7 @@ export function EstimatePreview({
         @media print {
           .estimate-preview {
             padding: 0;
+            border-radius: 0;
           }
         }
       `}</style>

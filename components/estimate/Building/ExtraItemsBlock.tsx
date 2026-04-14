@@ -391,12 +391,13 @@ export function ExtraItemsBlock({
           display: flex;
           flex-direction: column;
           gap: 0.75rem;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
         }
 
         .extra-section {
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.5rem;
-          background: white;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: var(--radius-sm, 12px);
+          background: var(--card, #fffdf9);
           overflow: hidden;
         }
 
@@ -405,18 +406,19 @@ export function ExtraItemsBlock({
           align-items: center;
           gap: 0.75rem;
           padding: 0.75rem 1rem;
-          background: var(--color-surface, #f9fafb);
+          background: var(--bg-accent, #f9f4ec);
           cursor: pointer;
           user-select: none;
+          transition: background 0.2s;
         }
 
         .section-header:hover {
-          background: var(--color-surface-hover, #f3f4f6);
+          background: rgba(10, 106, 91, 0.08);
         }
 
         .section-icon {
           font-size: 0.75rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
 
         .section-title {
@@ -424,46 +426,49 @@ export function ExtraItemsBlock({
           font-weight: 600;
           margin: 0;
           flex: 1;
+          color: var(--ink, #1d1916);
         }
 
         .section-count {
           font-size: 0.75rem;
-          color: var(--color-text-secondary, #6b7280);
-          padding: 0.125rem 0.375rem;
-          background: var(--color-surface, #e5e7eb);
-          border-radius: 0.25rem;
+          color: var(--muted, #6a6259);
+          padding: 0.125rem 0.5rem;
+          background: var(--bg, #f4efe8);
+          border-radius: 6px;
         }
 
         .section-total {
           font-size: 0.875rem;
           font-weight: 600;
           font-variant-numeric: tabular-nums;
-          color: var(--color-primary, #2563eb);
+          color: var(--accent, #0a6a5b);
         }
 
         .add-btn {
           padding: 0.25rem 0.75rem;
-          background: var(--color-primary, #2563eb);
+          background: var(--accent, #0a6a5b);
           color: white;
           border: none;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           cursor: pointer;
           font-size: 0.75rem;
           font-weight: 600;
+          font-family: inherit;
+          transition: background 0.2s;
         }
 
         .add-btn:hover {
-          background: var(--color-primary-dark, #1d4ed8);
+          background: #085c4f;
         }
 
         .section-content {
           padding: 0.75rem 1rem;
-          border-top: 1px solid var(--color-border, #e5e7eb);
+          border-top: 1px solid var(--border, #e6dbcf);
         }
 
         .empty-message {
           text-align: center;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           font-size: 0.875rem;
           padding: 1rem;
           margin: 0;
@@ -473,19 +478,20 @@ export function ExtraItemsBlock({
         .extra-row {
           padding: 0.5rem;
           margin-bottom: 0.5rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.375rem;
-          border-left: 3px solid var(--color-text-secondary, #6b7280);
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 8px;
+          border-left: 3px solid var(--muted, #6a6259);
+          background: var(--card, #fffdf9);
         }
 
         .extra-row.status-approved {
-          border-left-color: var(--color-success, #16a34a);
-          background: var(--color-success-light, #dcfce7);
+          border-left-color: var(--accent, #0a6a5b);
+          background: rgba(10, 106, 91, 0.08);
         }
 
         .extra-row.status-rejected {
-          border-left-color: var(--color-error, #dc2626);
-          background: var(--color-error-light, #fee2e2);
+          border-left-color: #dc2626;
+          background: #fee2e2;
           opacity: 0.6;
         }
 
@@ -501,25 +507,30 @@ export function ExtraItemsBlock({
           flex: 1;
           padding: 0.375rem 0.5rem;
           border: 1px solid transparent;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           font-size: 0.875rem;
           background: transparent;
+          font-family: inherit;
+          color: var(--ink, #1d1916);
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .extra-name:focus,
         .exclusion-name:focus,
         .option-name:focus {
-          border-color: var(--color-primary, #2563eb);
-          background: white;
+          border-color: var(--accent, #0a6a5b);
+          background: var(--card, #fffdf9);
           outline: none;
         }
 
         .extra-status {
           padding: 0.375rem 0.5rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.25rem;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 6px;
           font-size: 0.75rem;
-          background: white;
+          background: var(--card, #fffdf9);
+          font-family: inherit;
+          color: var(--ink, #1d1916);
         }
 
         .extra-amount,
@@ -527,23 +538,26 @@ export function ExtraItemsBlock({
           width: 120px;
           padding: 0.375rem 0.5rem;
           border: 1px solid transparent;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           font-size: 0.875rem;
           text-align: right;
           font-variant-numeric: tabular-nums;
           background: transparent;
+          font-family: inherit;
+          color: var(--ink, #1d1916);
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .extra-amount:focus,
         .option-amount:focus {
-          border-color: var(--color-primary, #2563eb);
-          background: white;
+          border-color: var(--accent, #0a6a5b);
+          background: var(--card, #fffdf9);
           outline: none;
         }
 
         .extra-amount.cost,
         .option-amount.cost {
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
         }
 
         .extra-desc {
@@ -552,16 +566,18 @@ export function ExtraItemsBlock({
           margin-top: 0.25rem;
           padding: 0.25rem 0.5rem;
           border: 1px solid transparent;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           font-size: 0.75rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           resize: vertical;
           background: transparent;
+          font-family: inherit;
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .extra-desc:focus {
-          border-color: var(--color-primary, #2563eb);
-          background: white;
+          border-color: var(--accent, #0a6a5b);
+          background: var(--card, #fffdf9);
           outline: none;
         }
 
@@ -572,23 +588,26 @@ export function ExtraItemsBlock({
           gap: 0.5rem;
           padding: 0.5rem;
           margin-bottom: 0.5rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.375rem;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 8px;
+          background: var(--card, #fffdf9);
         }
 
         .exclusion-desc {
           flex: 1;
           padding: 0.375rem 0.5rem;
           border: 1px solid transparent;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           font-size: 0.75rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           background: transparent;
+          font-family: inherit;
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .exclusion-desc:focus {
-          border-color: var(--color-primary, #2563eb);
-          background: white;
+          border-color: var(--accent, #0a6a5b);
+          background: var(--card, #fffdf9);
           outline: none;
         }
 
@@ -599,14 +618,15 @@ export function ExtraItemsBlock({
           gap: 0.5rem;
           padding: 0.5rem;
           margin-bottom: 0.5rem;
-          border: 1px solid var(--color-border, #e5e7eb);
-          border-radius: 0.375rem;
-          transition: background 0.2s;
+          border: 1px solid var(--border, #e6dbcf);
+          border-radius: 8px;
+          transition: background 0.2s, border-color 0.2s;
+          background: var(--card, #fffdf9);
         }
 
         .option-row.selected {
-          background: var(--color-success-light, #dcfce7);
-          border-color: var(--color-success, #16a34a);
+          background: rgba(10, 106, 91, 0.12);
+          border-color: var(--accent, #0a6a5b);
         }
 
         .option-toggle {
@@ -623,6 +643,11 @@ export function ExtraItemsBlock({
           font-size: 1.25rem;
           width: 1.5rem;
           text-align: center;
+          color: var(--muted, #6a6259);
+        }
+
+        .option-row.selected .toggle-indicator {
+          color: var(--accent, #0a6a5b);
         }
 
         .delete-btn {
@@ -631,9 +656,9 @@ export function ExtraItemsBlock({
           padding: 0.25rem 0.5rem;
           cursor: pointer;
           font-size: 1.25rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
           opacity: 0;
-          transition: opacity 0.2s;
+          transition: opacity 0.2s, color 0.2s;
         }
 
         .extra-row:hover .delete-btn,
@@ -643,7 +668,7 @@ export function ExtraItemsBlock({
         }
 
         .delete-btn:hover {
-          color: var(--color-error, #dc2626);
+          color: #dc2626;
         }
       `}</style>
     </div>

@@ -347,6 +347,7 @@ export function LineItemTable({
       <style jsx>{`
         .line-item-table {
           overflow-x: auto;
+          font-family: "BIZ UDPGothic", "Noto Sans JP", sans-serif;
         }
 
         table {
@@ -359,15 +360,15 @@ export function LineItemTable({
         td {
           padding: 0.5rem;
           text-align: left;
-          border-bottom: 1px solid var(--color-border, #e5e7eb);
+          border-bottom: 1px solid var(--border, #e6dbcf);
         }
 
         th {
           font-weight: 600;
           font-size: 0.75rem;
           text-transform: uppercase;
-          color: var(--color-text-secondary, #6b7280);
-          background: var(--color-surface, #f9fafb);
+          color: var(--muted, #6a6259);
+          background: var(--bg-accent, #f9f4ec);
         }
 
         .col-name {
@@ -403,16 +404,19 @@ export function LineItemTable({
           width: 100%;
           padding: 0.25rem 0.5rem;
           border: 1px solid transparent;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           background: transparent;
           font-size: 0.875rem;
+          font-family: inherit;
+          color: var(--ink, #1d1916);
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .cell-input:focus,
         .cell-select:focus {
           outline: none;
-          border-color: var(--color-primary, #2563eb);
-          background: white;
+          border-color: var(--accent, #0a6a5b);
+          background: var(--card, #fffdf9);
         }
 
         .cell-input.number {
@@ -422,33 +426,34 @@ export function LineItemTable({
 
         .cell-value {
           font-variant-numeric: tabular-nums;
+          color: var(--ink, #1d1916);
         }
 
         .margin-badge {
           display: inline-block;
-          padding: 0.125rem 0.375rem;
-          border-radius: 0.25rem;
+          padding: 0.125rem 0.5rem;
+          border-radius: 6px;
           font-size: 0.75rem;
           font-weight: 600;
         }
 
         .margin-badge.good {
-          background: var(--color-success-light, #dcfce7);
-          color: var(--color-success, #16a34a);
+          background: rgba(10, 106, 91, 0.12);
+          color: var(--accent, #0a6a5b);
         }
 
         .margin-badge.warning {
-          background: var(--color-warning-light, #fef3c7);
-          color: var(--color-warning, #ca8a04);
+          background: rgba(198, 94, 26, 0.12);
+          color: var(--accent-2, #c65e1a);
         }
 
         .margin-badge.low {
-          background: var(--color-error-light, #fee2e2);
-          color: var(--color-error, #dc2626);
+          background: #fee2e2;
+          color: #dc2626;
         }
 
         .option-item {
-          background: var(--color-surface, #f9fafb);
+          background: var(--bg-accent, #f9f4ec);
         }
 
         .option-item.unselected {
@@ -456,7 +461,7 @@ export function LineItemTable({
         }
 
         .internal-only {
-          background: var(--color-warning-light, #fef3c7);
+          background: rgba(198, 94, 26, 0.08);
         }
 
         .option-checkbox {
@@ -469,30 +474,33 @@ export function LineItemTable({
           padding: 0.25rem;
           cursor: pointer;
           font-size: 1rem;
-          color: var(--color-text-secondary, #6b7280);
+          color: var(--muted, #6a6259);
+          transition: color 0.2s;
         }
 
         .action-button:hover {
-          color: var(--color-primary, #2563eb);
+          color: var(--accent, #0a6a5b);
         }
 
         .action-button.delete:hover {
-          color: var(--color-error, #dc2626);
+          color: #dc2626;
         }
 
         .new-item-row {
-          background: var(--color-surface, #f9fafb);
+          background: var(--bg-accent, #f9f4ec);
         }
 
         .add-button {
           padding: 0.25rem 0.75rem;
-          background: var(--color-primary, #2563eb);
+          background: var(--accent, #0a6a5b);
           color: white;
           border: none;
-          border-radius: 0.25rem;
+          border-radius: 6px;
           cursor: pointer;
           font-size: 0.75rem;
           font-weight: 600;
+          font-family: inherit;
+          transition: background 0.2s;
         }
 
         .add-button:disabled {
@@ -501,7 +509,7 @@ export function LineItemTable({
         }
 
         .add-button:hover:not(:disabled) {
-          background: var(--color-primary-dark, #1d4ed8);
+          background: #085c4f;
         }
       `}</style>
     </div>
