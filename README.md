@@ -17,6 +17,8 @@ erDiagram
   COMPANIES ||--o{ AUDIT_LOGS : has
   COMPANIES ||--o{ REPORT_DAILY_CUMULATIVE : has
   COMPANIES ||--o{ REPORT_WORK_TRAINING_CUMULATIVE : has
+  COMPANIES ||--o{ ESTIMATES : has
+  COMPANIES ||--o{ COST_SETTINGS : has
 
   USERS ||--o{ MEMBERSHIPS : has
   ROLES ||--o{ MEMBERSHIPS : has
@@ -42,6 +44,15 @@ erDiagram
 
   SHARE_LINKS ||--o{ ACCESS_LOGS : has
   CLIENT_DEVICES ||--o{ SYNC_TELEMETRY : has
+
+  PROJECTS ||--o{ ESTIMATES : has
+  COUNTERPARTIES ||--o{ ESTIMATES : has
+  ESTIMATES ||--o{ ESTIMATE_SECTIONS : has
+  ESTIMATE_SECTIONS ||--o{ ESTIMATE_LINE_ITEMS : has
+  ESTIMATE_SECTIONS ||--o{ ESTIMATE_SECTIONS : "parent"
+  ESTIMATES ||--o{ ESTIMATE_EXTRA_WORKS : has
+  ESTIMATES ||--o{ ESTIMATE_EXCLUSIONS : has
+  ESTIMATES ||--o{ ESTIMATE_OPTIONS : has
 
   COMPANIES {
     string id PK
@@ -412,6 +423,121 @@ erDiagram
     datetime created_at
     string meta
   }
+
+  ESTIMATES {
+    string id PK
+    string company_id FK
+    string project_id FK
+    string counterparty_id FK
+    string estimate_type
+    string building_mode
+    string building_type
+    string structure_type
+    string estimate_stage
+    decimal floor_area
+    string title
+    string status
+    date valid_until
+    text notes
+    decimal selling_subtotal
+    decimal cost_subtotal
+    decimal overheads_total
+    decimal discount_amount
+    decimal tax_rate
+    decimal tax_amount
+    decimal grand_total
+    string created_by
+    datetime created_at
+    datetime updated_at
+  }
+
+  ESTIMATE_SECTIONS {
+    string id PK
+    string estimate_id FK
+    string parent_section_id FK
+    string category
+    string section_type
+    string code
+    string name
+    int sort_order
+    bool is_expanded
+    decimal selling_total
+    decimal cost_total
+    datetime created_at
+    datetime updated_at
+  }
+
+  ESTIMATE_LINE_ITEMS {
+    string id PK
+    string section_id FK
+    string name
+    text description
+    string work_type
+    string specification
+    string unit
+    decimal quantity
+    decimal cost_unit_price
+    decimal selling_unit_price
+    decimal cost_total
+    decimal selling_total
+    decimal gross_margin_rate
+    decimal adjustment_amount
+    decimal tax_rate
+    bool is_tax_exempt
+    text remarks_internal
+    text remarks_client
+    bool is_internal_only
+    bool is_client_visible
+    bool is_option
+    bool is_selected
+    int sort_order
+    datetime created_at
+    datetime updated_at
+  }
+
+  ESTIMATE_EXTRA_WORKS {
+    string id PK
+    string estimate_id FK
+    string name
+    text description
+    decimal selling_amount
+    decimal cost_amount
+    string status
+    int sort_order
+    datetime created_at
+  }
+
+  ESTIMATE_EXCLUSIONS {
+    string id PK
+    string estimate_id FK
+    string name
+    text description
+    int sort_order
+    datetime created_at
+  }
+
+  ESTIMATE_OPTIONS {
+    string id PK
+    string estimate_id FK
+    string name
+    text description
+    decimal selling_amount
+    decimal cost_amount
+    bool is_selected
+    int sort_order
+    datetime created_at
+  }
+
+  COST_SETTINGS {
+    string id PK
+    string company_id FK
+    decimal site_management_rate
+    decimal general_expense_rate
+    decimal default_margin_rate
+    decimal default_tax_rate
+    datetime created_at
+    datetime updated_at
+  }
 ```
 
 **Constraints**
@@ -487,3 +613,15 @@ erDiagram
 - `report_work_training_cumulative`: FOREIGN KEY(`training_id`) -> `trainings.id`
 
 - `audit_logs`: FOREIGN KEY(`company_id`) -> `companies.id`
+
+- `estimates`: FOREIGN KEY(`company_id`) -> `companies.id`
+- `estimates`: FOREIGN KEY(`project_id`) -> `projects.id` (nullable)
+- `estimates`: FOREIGN KEY(`counterparty_id`) -> `counterparties.id` (nullable)
+- `estimate_sections`: FOREIGN KEY(`estimate_id`) -> `estimates.id` ON DELETE CASCADE
+- `estimate_sections`: FOREIGN KEY(`parent_section_id`) -> `estimate_sections.id` (nullable)
+- `estimate_line_items`: FOREIGN KEY(`section_id`) -> `estimate_sections.id` ON DELETE CASCADE
+- `estimate_extra_works`: FOREIGN KEY(`estimate_id`) -> `estimates.id` ON DELETE CASCADE
+- `estimate_exclusions`: FOREIGN KEY(`estimate_id`) -> `estimates.id` ON DELETE CASCADE
+- `estimate_options`: FOREIGN KEY(`estimate_id`) -> `estimates.id` ON DELETE CASCADE
+- `cost_settings`: FOREIGN KEY(`company_id`) -> `companies.id`
+- `cost_settings`: UNIQUE(`company_id`)

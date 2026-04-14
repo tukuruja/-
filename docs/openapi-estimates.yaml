@@ -1,0 +1,825 @@
+# OpenAPI Estimate Endpoints
+# Add these to the main openapi.yaml file after /v1/daily-reports/{id}/submit
+
+# =============================================================================
+# Paths Section - Add after daily-reports endpoints
+# =============================================================================
+
+paths:
+  /v1/estimates:
+    get:
+      summary: List estimates
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: project_id
+          in: query
+          description: Filter by project
+          schema: { type: string }
+        - name: counterparty_id
+          in: query
+          description: Filter by counterparty
+          schema: { type: string }
+        - name: estimate_type
+          in: query
+          description: Filter by estimate type
+          schema: { type: string, enum: [standard, civil, building] }
+        - name: building_mode
+          in: query
+          description: Filter by building mode (only for building type)
+          schema: { type: string, enum: [new_build, reform] }
+        - name: status
+          in: query
+          description: Filter by status
+          schema: { type: string, enum: [draft, sent, approved, rejected] }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 50, maximum: 100 }
+        - name: offset
+          in: query
+          schema: { type: integer, default: 0 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListEstimatesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      summary: Create estimate
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EstimateCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estimate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /v1/estimates/{id}:
+    get:
+      summary: Get estimate with sections and line items
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estimate"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      summary: Update estimate
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EstimateUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estimate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      summary: Delete estimate
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/sections:
+    get:
+      summary: List sections for estimate
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListEstimateSectionsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    post:
+      summary: Add section to estimate
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EstimateSectionCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateSection"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/sections/{sectionId}:
+    put:
+      summary: Update section
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: sectionId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EstimateSectionUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateSection"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      summary: Delete section
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: sectionId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/sections/{sectionId}/items:
+    get:
+      summary: List line items in section
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: sectionId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListEstimateLineItemsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    post:
+      summary: Add line item to section
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: sectionId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EstimateLineItemCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateLineItem"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/sections/{sectionId}/items/{itemId}:
+    put:
+      summary: Update line item
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: sectionId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: itemId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EstimateLineItemUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateLineItem"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      summary: Delete line item
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: sectionId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: itemId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/calculate:
+    post:
+      summary: Recalculate all totals
+      description: Recomputes line item totals, section totals, and estimate grand total
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estimate"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/preview:
+    get:
+      summary: Get client-facing preview
+      description: Returns estimate without cost data (for client viewing)
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimatePreview"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/estimates/{id}/duplicate:
+    post:
+      summary: Duplicate estimate
+      description: Creates a copy of the estimate with all sections and line items
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Optional new title for duplicate
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estimate"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /v1/cost-settings:
+    get:
+      summary: Get company cost settings
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CostSettings"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    put:
+      summary: Update company cost settings
+      tags: [Estimates]
+      parameters:
+        - $ref: "#/components/parameters/CompanyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CostSettingsUpdateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CostSettings"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+# =============================================================================
+# Schemas Section - Add to components/schemas
+# =============================================================================
+
+components:
+  schemas:
+    # --- Estimate ---
+    Estimate:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        project_id: { type: string, nullable: true }
+        counterparty_id: { type: string, nullable: true }
+        estimate_type: { type: string, enum: [standard, civil, building] }
+        building_mode: { type: string, enum: [new_build, reform], nullable: true }
+        building_type: { type: string, nullable: true }
+        structure_type: { type: string, nullable: true }
+        estimate_stage: { type: string, enum: [concept, basic, detailed, final], nullable: true }
+        floor_area: { type: number, nullable: true }
+        title: { type: string, nullable: true }
+        status: { type: string, enum: [draft, sent, approved, rejected] }
+        valid_until: { type: string, format: date, nullable: true }
+        notes: { type: string, nullable: true }
+        selling_subtotal: { type: number }
+        cost_subtotal: { type: number }
+        overheads_total: { type: number }
+        discount_amount: { type: number }
+        tax_rate: { type: number }
+        tax_amount: { type: number }
+        grand_total: { type: number }
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateSection"
+        extra_works:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateExtraWork"
+        exclusions:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateExclusion"
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateOption"
+        created_by: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EstimateSection:
+      type: object
+      properties:
+        id: { type: string }
+        estimate_id: { type: string }
+        parent_section_id: { type: string, nullable: true }
+        category: { type: string, enum: [new_build, reform, common], nullable: true }
+        section_type: { type: string, enum: [trade, part, common], nullable: true }
+        code: { type: string, nullable: true }
+        name: { type: string }
+        sort_order: { type: integer }
+        is_expanded: { type: boolean }
+        selling_total: { type: number }
+        cost_total: { type: number }
+        line_items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateLineItem"
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EstimateLineItem:
+      type: object
+      properties:
+        id: { type: string }
+        section_id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        work_type: { type: string, nullable: true }
+        specification: { type: string, nullable: true }
+        unit: { type: string }
+        quantity: { type: number }
+        cost_unit_price: { type: number }
+        selling_unit_price: { type: number }
+        cost_total: { type: number }
+        selling_total: { type: number }
+        gross_margin_rate: { type: number, nullable: true }
+        adjustment_amount: { type: number }
+        tax_rate: { type: number, nullable: true }
+        is_tax_exempt: { type: boolean }
+        remarks_internal: { type: string, nullable: true }
+        remarks_client: { type: string, nullable: true }
+        is_internal_only: { type: boolean }
+        is_client_visible: { type: boolean }
+        is_option: { type: boolean }
+        is_selected: { type: boolean }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EstimateExtraWork:
+      type: object
+      properties:
+        id: { type: string }
+        estimate_id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        selling_amount: { type: number }
+        cost_amount: { type: number }
+        status: { type: string, enum: [pending, approved, rejected] }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+
+    EstimateExclusion:
+      type: object
+      properties:
+        id: { type: string }
+        estimate_id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+
+    EstimateOption:
+      type: object
+      properties:
+        id: { type: string }
+        estimate_id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        selling_amount: { type: number }
+        cost_amount: { type: number }
+        is_selected: { type: boolean }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+
+    CostSettings:
+      type: object
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        site_management_rate: { type: number }
+        general_expense_rate: { type: number }
+        default_margin_rate: { type: number }
+        default_tax_rate: { type: number }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    # --- Preview (Client-facing, no cost data) ---
+    EstimatePreview:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string, nullable: true }
+        status: { type: string, enum: [draft, sent, approved, rejected] }
+        valid_until: { type: string, format: date, nullable: true }
+        building_type: { type: string, nullable: true }
+        structure_type: { type: string, nullable: true }
+        floor_area: { type: number, nullable: true }
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateSectionPreview"
+        exclusions:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateExclusion"
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateOptionPreview"
+        selling_subtotal: { type: number }
+        overheads_total: { type: number }
+        discount_amount: { type: number }
+        tax_rate: { type: number }
+        tax_amount: { type: number }
+        grand_total: { type: number }
+
+    EstimateSectionPreview:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        line_items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateLineItemPreview"
+        selling_total: { type: number }
+
+    EstimateLineItemPreview:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        specification: { type: string, nullable: true }
+        unit: { type: string }
+        quantity: { type: number }
+        selling_unit_price: { type: number }
+        selling_total: { type: number }
+        remarks_client: { type: string, nullable: true }
+        is_option: { type: boolean }
+        is_selected: { type: boolean }
+
+    EstimateOptionPreview:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        selling_amount: { type: number }
+        is_selected: { type: boolean }
+
+    # --- Request/Response ---
+    ListEstimatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Estimate"
+        total: { type: integer }
+        limit: { type: integer }
+        offset: { type: integer }
+
+    ListEstimateSectionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateSection"
+
+    ListEstimateLineItemsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/EstimateLineItem"
+
+    EstimateCreateRequest:
+      type: object
+      required: [estimate_type]
+      properties:
+        project_id: { type: string }
+        counterparty_id: { type: string }
+        estimate_type: { type: string, enum: [standard, civil, building] }
+        building_mode: { type: string, enum: [new_build, reform] }
+        building_type: { type: string }
+        structure_type: { type: string }
+        estimate_stage: { type: string, enum: [concept, basic, detailed, final] }
+        floor_area: { type: number }
+        title: { type: string }
+        notes: { type: string }
+        valid_until: { type: string, format: date }
+
+    EstimateUpdateRequest:
+      type: object
+      properties:
+        project_id: { type: string }
+        counterparty_id: { type: string }
+        building_mode: { type: string, enum: [new_build, reform] }
+        building_type: { type: string }
+        structure_type: { type: string }
+        estimate_stage: { type: string, enum: [concept, basic, detailed, final] }
+        floor_area: { type: number }
+        title: { type: string }
+        status: { type: string, enum: [draft, sent, approved, rejected] }
+        notes: { type: string }
+        valid_until: { type: string, format: date }
+        overheads_total: { type: number }
+        discount_amount: { type: number }
+        tax_rate: { type: number }
+
+    EstimateSectionCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        parent_section_id: { type: string }
+        category: { type: string, enum: [new_build, reform, common] }
+        section_type: { type: string, enum: [trade, part, common] }
+        code: { type: string }
+        name: { type: string }
+        sort_order: { type: integer }
+
+    EstimateSectionUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        sort_order: { type: integer }
+        is_expanded: { type: boolean }
+
+    EstimateLineItemCreateRequest:
+      type: object
+      required: [name, unit]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        work_type: { type: string }
+        specification: { type: string }
+        unit: { type: string }
+        quantity: { type: number, default: 1 }
+        cost_unit_price: { type: number, default: 0 }
+        selling_unit_price: { type: number, default: 0 }
+        tax_rate: { type: number }
+        is_tax_exempt: { type: boolean, default: false }
+        remarks_internal: { type: string }
+        remarks_client: { type: string }
+        is_internal_only: { type: boolean, default: false }
+        is_client_visible: { type: boolean, default: true }
+        is_option: { type: boolean, default: false }
+        is_selected: { type: boolean, default: true }
+        sort_order: { type: integer }
+
+    EstimateLineItemUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        description: { type: string }
+        work_type: { type: string }
+        specification: { type: string }
+        unit: { type: string }
+        quantity: { type: number }
+        cost_unit_price: { type: number }
+        selling_unit_price: { type: number }
+        adjustment_amount: { type: number }
+        tax_rate: { type: number }
+        is_tax_exempt: { type: boolean }
+        remarks_internal: { type: string }
+        remarks_client: { type: string }
+        is_internal_only: { type: boolean }
+        is_client_visible: { type: boolean }
+        is_option: { type: boolean }
+        is_selected: { type: boolean }
+        sort_order: { type: integer }
+
+    CostSettingsUpdateRequest:
+      type: object
+      properties:
+        site_management_rate: { type: number }
+        general_expense_rate: { type: number }
+        default_margin_rate: { type: number }
+        default_tax_rate: { type: number }
