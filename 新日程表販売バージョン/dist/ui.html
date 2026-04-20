@@ -28,7 +28,7 @@
           <a href="index.html">概要</a>
           <a href="requirements.html">要件</a>
           <a href="research.html">世界調査</a>
-          <a href="experts.html">30専門家</a>
+          <a href="experts.html">200専門家</a>
           <small>Design</small>
           <a href="spec.html">最終仕様</a>
           <a href="ui.html">UI/文言</a>
@@ -51,7 +51,7 @@
           <h2>UI遷移（簡略）</h2>
           <div class="code">
 flowchart TD
-  A["アプリ起動"] --> B["SMS/LINEで入る"]
+  A["アプリ起動"] --> B["SMS/LINEログイン"]
   B --> C["会社選択"]
   C --> D["今日"]
   D --> E["連絡"]
@@ -63,6 +63,7 @@ flowchart TD
   E --> S["共有リンク"]
   S --> P["公開ページ"]
   P --> Q["PIN入力(必要時)"]
+  E --> R["見た記録（社内）"]
           </div>
         </section>
 
